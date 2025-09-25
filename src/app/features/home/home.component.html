@@ -1,1 +1,32 @@
-<p>home works!</p>
+<div class="register-container">
+  <form action="/register" method="POST">
+    
+    <div class="field-container">
+      <input type="text" id="username" name="username" placeholder=" " required />
+      <label for="username">Name</label>
+    </div>
+    
+    <div class="field-container">
+      <input type="text" id="lastname" name="lastname" placeholder=" " required />
+      <label for="lastname">Last Name</label>
+    </div>
+    
+    <div class="field-container">
+      <input type="email" id="email" name="email" placeholder=" " required />
+      <label for="email">Email</label>
+    </div>
+
+    <div class="field-container">
+      <input type="password" id="password" name="password" placeholder=" " required />
+      <label for="password">Password</label>
+    </div>
+
+    <div class="field-container">
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder=" " required />
+      <label for="confirmPassword">Confirm Password</label>
+    </div>
+
+    <button type="submit">Register</button>
+
+  </form>
+</div>
