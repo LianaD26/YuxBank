@@ -1,1 +1,42 @@
-<p>layout works!</p>
+<link rel="stylesheet" href="layout.component.css">
+<nav class="navbar">
+  <div class="navbar-logo">
+    <h2>YuxBank</h2>
+  </div>
+
+  <ul class="navbar-links">
+    <!-- Products with dropdown -->
+    <li class="dropdown">
+      <a routerLink="/products" routerLinkActive="active" class="dropbtn">
+        Products
+      </a>
+      <ul class="dropdown-content">
+        <li><a routerLink="/products/register" routerLinkActive="active">Register Account</a></li>
+        <li><a routerLink="/products/view" routerLinkActive="active">View Accounts</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+        <a routerLink="/settings" routerLinkActive="active" class="dropbtn">Settings</a>
+        <ul class="dropdown-content">
+            <li><a routerLink="/settings/password_change" routerLinkActive="active">Password Change</a></li>
+            <li><a routerLink="/settings/account_statement" routerLinkActive="active">Account Statement</a></li>
+        </ul>
+    </li>
+    <li class="dropdown">
+      <a routerLink="/transfers" routerLinkActive="active" class="dropbtn">
+        Transfers
+      </a>
+      <ul class="dropdown-content">
+        <li><a routerLink="/transfers/history" routerLinkActive="active">History</a></li>
+        <li><a routerLink="/transfers/transfer" routerLinkActive="active">Transfer</a></li>
+      </ul>
+    </li>
+    <li><a routerLink="/limits" routerLinkActive="active">Limits</a></li>
+    <li><a routerLink="/pockets" routerLinkActive="active">Pockets</a></li>
+    <li><a routerLink="/" routerLinkActive="active">Log Out</a></li>
+  </ul>
+</nav>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>

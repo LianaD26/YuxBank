@@ -8,6 +8,4 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-  // ...código existente...
-}
+export class HomeComponent {}

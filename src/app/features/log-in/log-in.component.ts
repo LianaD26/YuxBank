@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-settings',
+  selector: 'app-log-in',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  templateUrl: './log-in.component.html',
+  styleUrl: './log-in.component.css'
 })
-export class SettingsComponent {
+export class LogInComponent {
 
 }
