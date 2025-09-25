@@ -12,6 +12,9 @@ import { PasswordChangeComponent } from './app/features/settings/password-change
 import { LayoutComponent } from './app/shared/layout/layout.component';
 import { HistoryComponent } from './app/features/transfers/history/history.component';
 import { TransferComponent } from './app/features/transfers/transfer/transfer.component';
+import { RegisterComponent } from './app/features/register/register.component';
+import { LogInComponent } from './app/features/log-in/log-in.component';
+import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.component';
 
 export const routes: Routes = [
   {
@@ -35,5 +38,9 @@ export const routes: Routes = [
       { path: 'pockets', component: PocketsComponent },
     ]
   },
+  { path: 'home', component: LayoutHomeComponent, children: [
+    { path: 'register', component: RegisterComponent },
+    { path: 'login', component:  LogInComponent}
+  ] },
   { path: '**', redirectTo: '' }
 ];
