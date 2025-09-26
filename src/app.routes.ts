@@ -22,7 +22,7 @@ export const routes: Routes = [
     path: '',
     component: LayoutHomeComponent,
     children: [
-      { path: '', redirectTo: 'login', pathMatch: 'full' }, 
+      {path: '', component: HomeComponent},  //{ path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LogInComponent },
       { path: 'register', component: RegisterComponent },
     ]
@@ -33,7 +33,7 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'home', component: HomeComponent },
+      //{ path: '', redirectTo: 'login', pathMatch: 'full' }, //{ path: 'home', component: HomeComponent },
       { path: 'products', component: ProductsComponent, children: [
         { path: 'register', component: RegisterAccountComponent },
         { path: 'view', component: ViewAccountsComponent },
