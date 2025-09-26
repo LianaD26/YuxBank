@@ -17,11 +17,23 @@ import { LogInComponent } from './app/features/log-in/log-in.component';
 import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.component';
 
 export const routes: Routes = [
+  // LayoutHome para autenticación
+  {
+    path: '',
+    component: LayoutHomeComponent,
+    children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' }, 
+      { path: 'login', component: LogInComponent },
+      { path: 'register', component: RegisterComponent },
+    ]
+  },
+
+  // Layout principal
   {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: '', component: HomeComponent },
+      { path: 'home', component: HomeComponent },
       { path: 'products', component: ProductsComponent, children: [
         { path: 'register', component: RegisterAccountComponent },
         { path: 'view', component: ViewAccountsComponent },
@@ -38,9 +50,7 @@ export const routes: Routes = [
       { path: 'pockets', component: PocketsComponent },
     ]
   },
-  { path: 'home', component: LayoutHomeComponent, children: [
-    { path: 'register', component: RegisterComponent },
-    { path: 'login', component:  LogInComponent}
-  ] },
+
   { path: '**', redirectTo: '' }
 ];
+
