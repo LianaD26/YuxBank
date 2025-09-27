@@ -10,12 +10,12 @@
     <form action="/log-in" method="POST">
     
     <div class="field-container">
-      <input type="email" id="email" name="email" placeholder="jon.doe@example.com" required />
+      <input type="email" id="email" name="email" placeholder="jon.doe@example.com" required autocomplete="email" />
       <label for="email">Email</label>
     </div>
 
     <div class="field-container">
-      <input type="password" id="password" name="password" placeholder="********" required />
+      <input type="password" id="password" name="password" placeholder="********" required autocomplete="current-password" />
       <label for="password">Password</label>
     </div>
     <button type="submit">Log In</button>

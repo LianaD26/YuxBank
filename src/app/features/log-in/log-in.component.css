@@ -1,5 +1,6 @@
 .slider-frame {
-  width: 95vw; /* Cambiar de 100vw a 95vw para coincidir */ height: 60vh;
+  width: 95vw; /* Cambiar de 100vw a 95vw para coincidir */ 
+  height: 60vh;
   position: relative;
   margin: 2rem auto;
   overflow: hidden;

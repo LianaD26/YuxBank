@@ -18,6 +18,9 @@ import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.compon
 import { RecoverPasswordComponent } from './app/features/recover-password/recover-password.component';
 
 export const routes: Routes = [
+  //paginas independientes
+  {path:"recover-password", component: RecoverPasswordComponent},
+  
   // LayoutHome para autenticación
   {
     path: '',
