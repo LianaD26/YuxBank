@@ -15,6 +15,7 @@ import { TransferComponent } from './app/features/transfers/transfer/transfer.co
 import { RegisterComponent } from './app/features/register/register.component';
 import { LogInComponent } from './app/features/log-in/log-in.component';
 import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.component';
+import { RecoverPasswordComponent } from './app/features/recover-password/recover-password.component';
 
 export const routes: Routes = [
   // LayoutHome para autenticación
@@ -23,8 +24,9 @@ export const routes: Routes = [
     component: LayoutHomeComponent,
     children: [
       {path: '', component: HomeComponent},  //{ path: '', redirectTo: 'login', pathMatch: 'full' },
-      { path: 'login', component: LogInComponent },
+      { path: 'log-in', component: LogInComponent },
       { path: 'register', component: RegisterComponent },
+      { path: 'recover-password', component: RecoverPasswordComponent },
     ]
   },
 

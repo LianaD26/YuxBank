@@ -1,0 +1,131 @@
+.slider-frame {
+  width: 95vw; /* Cambiar de 100vw a 95vw para coincidir */ height: 60vh;
+  position: relative;
+  margin: 2rem auto;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.log_in-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
+  height: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: -10rem;
+}
+
+.introduction {
+  flex: 1;
+  padding: 3rem 2rem;
+  background-color: #8aa632;
+  border-radius: 15px 0 0 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+.introduction h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+form {
+  flex: 1;
+  padding: 3rem 2rem;
+  background-color: #79c8c6;
+  border-radius: 0 15px 15px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.field-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+.field-container input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+.field-container input:focus {
+  outline: none;
+  border-color: #dce53f;
+  box-shadow: 0 0 5px rgba(220, 229, 63, 0.3);
+}
+.field-container label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: #dce53f;
+  padding: 0 5px;
+  font-size: 0.9rem;
+  color: #333;
+}
+button {
+  padding: 0.75rem 1.5rem;
+  background-color: #dce53f;
+  border: none;
+  border-radius: 10px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #c4d52a;
+}
+button:active {
+  background-color: #aebd23;
+}
+button[type="submit"] {
+  width: 100%;
+  max-width: 300px;
+  background-color: #8aa632;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button[type="submit"]:hover {
+  background-color: #7a9429;
+}
+button[type="submit"]:active {
+  background-color: #6b7a24;
+}
+.hiper_links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}

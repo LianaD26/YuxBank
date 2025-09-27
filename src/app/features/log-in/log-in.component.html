@@ -1,4 +1,29 @@
-<p>log-in works!</p>
-<main class="container">
-  <router-outlet></router-outlet>
-</main>
+<div class="log_in-container">
+  
+  <div class="form-wrapper">
+    
+    <div class="introduction">
+      <h2>Welcome Back to YuxBank</h2>
+      <p>Please enter your credentials to log in to your account.</p>
+    </div>
+
+    <form action="/log-in" method="POST">
+    
+    <div class="field-container">
+      <input type="email" id="email" name="email" placeholder="jon.doe@example.com" required />
+      <label for="email">Email</label>
+    </div>
+
+    <div class="field-container">
+      <input type="password" id="password" name="password" placeholder="********" required />
+      <label for="password">Password</label>
+    </div>
+    <button type="submit">Log In</button>
+    
+    <div class="hiper_links">
+    <a routerLink="/recover-password">Forgot Password?</a>
+    <a routerLink="/register">Don't have an account? Register here</a>
+    </div>
+  </form>
+
+</div>

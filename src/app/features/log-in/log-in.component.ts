@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router'; // ← Import correcto
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterLink],
   templateUrl: './log-in.component.html',
-  styleUrl: './log-in.component.css'
+  styleUrls: ['./log-in.component.css']
 })
 export class LogInComponent {
 

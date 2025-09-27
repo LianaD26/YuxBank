@@ -1,34 +1,43 @@
 <div class="register-container">
-  <form action="/register" method="POST">
+  
+  <div class="form-wrapper">
     
-    <div class="field-container">
-      <input type="text" id="username" name="username" placeholder=" " required />
+    <div class="introduction">
+      <h2>Welcome to YuxBank</h2>
+      <p>Please fill in the details below to create your account.</p>
+    </div>
+
+    <form action="/register" method="POST">
+    
+      <div class="field-container">
+      <input type="text" id="username" name="username" placeholder="jon" required />
       <label for="username">Name</label>
     </div>
     
     <div class="field-container">
-      <input type="text" id="lastname" name="lastname" placeholder=" " required />
+      <input type="text" id="lastname" name="lastname" placeholder="doe" required />
       <label for="lastname">Last Name</label>
     </div>
     
     <div class="field-container">
-      <input type="email" id="email" name="email" placeholder=" " required />
+      <input type="email" id="email" name="email" placeholder="jon.doe@example.com" required />
       <label for="email">Email</label>
     </div>
 
     <div class="field-container">
-      <input type="password" id="password" name="password" placeholder=" " required />
+      <input type="password" id="password" name="password" placeholder="#@password" required />
       <label for="password">Password</label>
     </div>
 
     <div class="field-container">
-      <input type="password" id="confirmPassword" name="confirmPassword" placeholder=" " required />
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="#@password" required />
       <label for="confirmPassword">Confirm Password</label>
     </div>
 
     <button type="submit">Register</button>
 
-  </form>
+    </form>
+  </div>
 </div>
 <main class="container">
   <router-outlet></router-outlet>
