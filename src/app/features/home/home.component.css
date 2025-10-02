@@ -1,6 +1,6 @@
 .slider-frame {
   width: 95vw; 
-  height: 50vh; 
+  height: 67vh; 
   margin: 50px 0 0 0; 
   position: relative;
   left: 50%;
@@ -56,10 +56,12 @@
 }
 
 .about-us {
-  background: linear-gradient(135deg, #dce53f, #8aa632);
+  /*background: linear-gradient(135deg, #dce53f, #8aa632);*/
   padding: 4rem 2rem;
   text-align: center;
   color: #2c3e50;
+  border-radius: 15px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .about-us h2 {
@@ -81,10 +83,12 @@
 
 /* Services Section */
 .services {
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #038b71, #79c8c6);
   padding: 4rem 2rem;
   text-align: center;
   color: white;
+  border-radius: 15px;
 }
 
 .services h2 {
@@ -105,13 +109,15 @@
 }
 
 /* Por que elegirnos Section */
-.por-que-elegirnos {
+.why-choose-us {
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #8aa632, #5b7900);
   padding: 4rem 2rem;
   color: white;
+  border-radius: 15px;
 }
 
-.por-que-elegirnos h2 {
+.why-choose-us h2 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
   color: #dce53f;
@@ -121,14 +127,14 @@
   text-align: center;
 }
 
-.por-que-elegirnos ul {
+.why-choose-us ul {
   max-width: 900px;
   margin: 0 auto;
   padding: 0;
   list-style: none;
 }
 
-.por-que-elegirnos li {
+.why-choose-us li {
   background: rgba(255, 255, 255, 0.1);
   margin-bottom: 1.5rem;
   padding: 1.5rem;
@@ -140,16 +146,18 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.por-que-elegirnos li:hover {
+.why-choose-us li:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* FAQ Section */
 .faq {
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #79c8c6, #038b71);
   padding: 4rem 2rem;
   color: #2c3e50;
+  border-radius: 15px;
 }
 
 .faq h2 {
@@ -189,29 +197,15 @@
 .faq p {
   margin-top: 1rem;
   margin-bottom: 0;
-  padding-left: 1rem;
-  font-size: 1rem;
-  font-weight: 400;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
   color: #2c3e50;
   line-height: 1.6;
-  border-left: 2px solid #dce53f;
+  border-left: 2px solid #ffffff;
 }
 
-/* Footer */
-footer {
-  background: linear-gradient(135deg, #5b7900, #038b71);
-  padding: 2rem 0;
-  text-align: center;
-  color: #dce53f;
-  font-size: 1rem;
-  margin-top: 0;
-}
 
-footer p {
-  margin: 0;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

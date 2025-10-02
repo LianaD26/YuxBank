@@ -1,4 +1,104 @@
-<p>settings works!</p>
-<main class="container">
-  <router-outlet></router-outlet>
-</main>
+<div class="settings-container">
+  <!-- Sidebar -->
+  <div class="settings-sidebar">
+    <h2>Settings</h2>
+    <ul>
+      <li 
+        [class.active]="selectedOption === 'email'" 
+        (click)="selectOption('email')">
+        Change Email
+      </li>
+      <li 
+        [class.active]="selectedOption === 'password'" 
+        (click)="selectOption('password')">
+        Change Password
+      </li>
+    </ul>
+  </div>
+
+  <!-- Content -->
+  <div class="settings-content">
+    
+    <!-- Change Email Form -->
+    <form 
+      *ngIf="selectedOption === 'email'" 
+      (ngSubmit)="onUpdateEmail()" 
+      class="settings-form">
+      
+      <h3>Change Email</h3>
+
+      <div class="field-container">
+        <label for="newEmail">New Email</label>
+        <input 
+          type="email" 
+          id="newEmail" 
+          [value]="newEmail()" 
+          (input)="newEmail.set($any($event.target).value)" 
+          placeholder="new.email@example.com" 
+          required 
+        />
+      </div>
+
+      <div class="field-container">
+        <label for="currentPasswordEmail">Current Password</label>
+        <input 
+          type="password" 
+          id="currentPasswordEmail" 
+          [value]="currentPasswordEmail()" 
+          (input)="currentPasswordEmail.set($any($event.target).value)" 
+          placeholder="Enter your current password" 
+          required 
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">Update Email</button>
+    </form>
+
+    <!-- Change Password Form -->
+    <form 
+      *ngIf="selectedOption === 'password'" 
+      (ngSubmit)="onUpdatePassword()" 
+      class="settings-form">
+      
+      <h3>Change Password</h3>
+
+      <div class="field-container">
+        <label for="currentPassword">Current Password</label>
+        <input 
+          type="password" 
+          id="currentPassword" 
+          [value]="currentPassword()" 
+          (input)="currentPassword.set($any($event.target).value)" 
+          placeholder="Enter your current password" 
+          required 
+        />
+      </div>
+
+      <div class="field-container">
+        <label for="newPassword">New Password</label>
+        <input 
+          type="password" 
+          id="newPassword" 
+          [value]="newPassword()" 
+          (input)="newPassword.set($any($event.target).value)" 
+          placeholder="Enter new password" 
+          required 
+        />
+      </div>
+
+      <div class="field-container">
+        <label for="confirmNewPassword">Confirm New Password</label>
+        <input 
+          type="password" 
+          id="confirmNewPassword" 
+          [value]="confirmNewPassword()" 
+          (input)="confirmNewPassword.set($any($event.target).value)" 
+          placeholder="Confirm new password" 
+          required 
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">Update Password</button>
+    </form>
+  </div>
+</div>

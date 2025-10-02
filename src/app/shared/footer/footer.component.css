@@ -1,8 +1,10 @@
 .footer {
-  background: linear-gradient(135deg, #8aa632, #79c8c6);
-  color: white;
+  /*background: linear-gradient(135deg, #8aa632, #79c8c6);*/
+  color: #2c3e50;
   padding: 3rem 0 1rem 0;
   margin-top: auto;
+  border-radius: 15px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .footer-container {
@@ -17,7 +19,7 @@
 .footer-section h3,
 .footer-section h4 {
   margin-bottom: 1rem;
-  color: white;
+  color: #2c3e50;
 }
 
 /* Estilos específicos para la sección de marca */
@@ -64,21 +66,21 @@
 }
 
 .footer-section ul li a {
-  color: rgba(255, 255, 255, 0.8);
+  color: #2c3e50;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .footer-section ul li a:hover {
-  color: white;
+  color: #2c3e50;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid #2c3e50;
   margin-top: 2rem;
   padding-top: 1rem;
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: #2c3e50;
 }
 
 @media (max-width: 768px) {

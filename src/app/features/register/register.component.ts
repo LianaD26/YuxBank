@@ -42,10 +42,6 @@ export class RegisterComponent {
 
   onSubmit(): void {
     //registrar usuario
-    if (this.registerUserService.userNameAndLastNameExists(this.name(), this.last_name())) {
-      alert('El nombre y apellido ya están en uso. Por favor, elige otro.');
-      return;
-    }
     if (this.registerUserService.emailExists(this.email())) {
       alert('El correo electrónico ya está en uso. Por favor, elige otro.');
       return;

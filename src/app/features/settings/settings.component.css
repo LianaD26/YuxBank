@@ -1,0 +1,124 @@
+.settings-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: poppins, sans-serif;
+}
+
+/* Sidebar */
+.settings-sidebar {
+  width: 220px;
+  background-color: #8aa632;
+  padding: 2rem 1rem;
+  color: white;
+  border-radius: 0 15px 15px 0;
+}
+
+.settings-sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.settings-sidebar li {
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.settings-sidebar li:hover,
+.settings-sidebar li.active {
+  background-color: #6e8626;
+}
+
+/* Contenido */
+.settings-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.settings-form {
+  background-color: #79c8c6;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.settings-form h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.field-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.field-container input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.field-container label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: #dce53f;
+  padding: 0 5px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #8aa632;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #6e8626;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-container {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .settings-content {
+    padding: 1rem;
+  }
+}

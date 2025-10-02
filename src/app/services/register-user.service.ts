@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export interface User{
+export interface User {
   name: string;
   last_name: string;
   email: string;
@@ -8,12 +8,11 @@ export interface User{
   confirm_password: string;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterUserService {
-  private readonly STORAGE_KEY='yuxbank_users'; 
+  private readonly STORAGE_KEY = 'yuxbank_users'; 
   
   constructor() {
     this.initializeStorage();
@@ -25,7 +24,7 @@ export class RegisterUserService {
     } 
   }
 
-  /*extraer usuarios existentes del localStorage*/
+  /* extraer usuarios existentes del localStorage */
   public getAllUsers(): User[] {
     try {
       const users = localStorage.getItem(this.STORAGE_KEY);
@@ -36,43 +35,26 @@ export class RegisterUserService {
     }
   }
 
-  /*verificar si existe un usuario con el mismo nombre*/
-  public userNameExists(name: string): boolean {
-    const users = this.getAllUsers();
-    return users.some(user => user.name === name);
-  }
-  /* verificar si el last_name existe */
-  public lastNameExists(last_name: string): boolean {
-    const users = this.getAllUsers();
-    return users.some(user => user.last_name === last_name);
-  }
-
-  /* verificar que exista un usuario con el mismo nombre y apellido */
-  public userNameAndLastNameExists(name: string, last_name: string): boolean {
-    const users = this.getAllUsers();
-    return users.some(user => user.name === name && user.last_name === last_name);
-  }
-
-  /* verificar si el email existe */
+  /* verificar si el email ya existe */
   public emailExists(email: string): boolean {
     const users = this.getAllUsers();
     return users.some(user => user.email === email);
   }
   
-  /*verificar que password sea igual a confirm_password */
+  /* verificar que password sea igual a confirm_password */
   public passwordsMatch(password: string, confirm_password: string): boolean {
     return password === confirm_password;
   }
   
-  /*verificar si el usuario cumple las reglas */
+  /* verificar si el usuario cumple las reglas (solo email único y contraseñas iguales) */
   public isUserValid(user: User): boolean {
     return (
-      !this.userNameAndLastNameExists(user.name, user.last_name) &&
       !this.emailExists(user.email) &&
       this.passwordsMatch(user.password, user.confirm_password)
     );
   }
-  /*registrar usuario */
+
+  /* registrar usuario */
   public registerUser(user: User): boolean {
     if (this.isUserValid(user)) {
       const users = this.getAllUsers();
