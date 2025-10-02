@@ -3,6 +3,7 @@ import { RouterLink,Router } from '@angular/router';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { LogInUserService } from '../../services/log-in-user.service';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-log-in',
@@ -16,7 +17,11 @@ export class LogInComponent {
   //datos del servicio en signals
   email = signal('');
   password = signal('');
-  constructor(private logInUserService: LogInUserService, private router: Router) { }
+  constructor(
+    private logInUserService: LogInUserService, 
+    private router: Router,
+    private storageService: StorageService
+  ) { }
 
   //merodos para acatualizar los valores de los signals
   updateEmail(value: string): void {
@@ -26,12 +31,21 @@ export class LogInComponent {
     this.password.set(value);
   }
   onSubmit(): void {
-    //iniciar sesión
-    const permiso = this.logInUserService.validateEmailAndPassword(this.email(), this.password());
-    if (permiso) {
+    // Obtener todos los usuarios registrados
+    const users = this.storageService.getAllUsers();
+    
+    // Buscar usuario por email y password
+    const foundUser = users.find(user => 
+      user.email === this.email() && 
+      user.password === this.password()
+    );
+    
+    if (foundUser) {
+      // Guardar usuario como logueado en localStorage
+      this.storageService.saveLoggedUser(foundUser);
       this.router.navigate(['/products']);
     } else {
-      alert('Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.');
+      alert('email or password is incorrect; try again please');
     }
   }
 }

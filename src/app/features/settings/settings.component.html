@@ -22,7 +22,7 @@
     <!-- Change Email Form -->
     <form 
       *ngIf="selectedOption === 'email'" 
-      (ngSubmit)="onUpdateEmail()" 
+      (ngSubmit)="changeEmail(newEmail(), currentPasswordEmail())"
       class="settings-form">
       
       <h3>Change Email</h3>
@@ -53,11 +53,10 @@
 
       <button type="submit" class="btn-submit">Update Email</button>
     </form>
-
     <!-- Change Password Form -->
     <form 
-      *ngIf="selectedOption === 'password'" 
-      (ngSubmit)="onUpdatePassword()" 
+      *ngIf="selectedOption === 'password'"
+      (ngSubmit)="changePassword(currentPassword(), newPassword(), confirmNewPassword())"
       class="settings-form">
       
       <h3>Change Password</h3>

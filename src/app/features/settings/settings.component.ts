@@ -1,15 +1,17 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RegisterUserService } from '../../services/register-user.service';
+import { RegisterUserService, User } from '../../services/register-user.service';
 import { StorageService } from '../../services/storage.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
+
 export class SettingsComponent {
   // Formularios (signals)
   newEmail = signal('');
@@ -30,112 +32,58 @@ export class SettingsComponent {
     this.selectedOption = option;
   }
 
-  private getLoggedUser(): any {
+  private getLoggedUser(): User | null {
     return this.storageService.getLoggedUser();
   }
 
-  private saveLoggedUser(user: any): void {
-    this.storageService.saveLoggedUser(user);
-  }
+  // Actualizar Email
+  changeEmail(newEmail:string,currentPassword:string): void {
+    // Obtener el usuario logueado
+    const loggedUser = this.storageService.getLoggedUser();
 
-onUpdateEmail(): void {
-    const loggedUser = this.getLoggedUser();
-
-    if (loggedUser.password !== this.currentPasswordEmail()) {
+    //validadr constraseña actual
+    if (!loggedUser || loggedUser.password !== currentPassword) {
       alert('Current password is incorrect.');
       return;
     }
-
-
-    if (!loggedUser) {
-        alert('No user logged in.');
-        return;
+    // Validar que el nuevo email no esté en uso
+    if (this.registerUserService.emailExists(newEmail)) {
+      alert('The new email is already in use. Please choose another one.');
+      return;
     }
+    // actualizar email anterior para la búsqueda
+    const oldEmail = loggedUser.email;
+    // actualizar el email en el objeto del usuario logueado
+    loggedUser.email = newEmail;
 
-    const oldEmail = loggedUser.email; // El email ANTES de la actualización
-    const newEmailVal = this.newEmail().trim();
-
-    // ... (otras validaciones de newEmailVal y currentPasswordEmail)
-
-    // Si newEmail es igual al anterior
-    if (newEmailVal === oldEmail) {
-        alert('The new email is the same as the current one.');
-        this.newEmail.set('');
-        this.currentPasswordEmail.set('');
-        return;
+    // Actualizar el usuario en el almacenamiento
+    const updateSuccess = this.storageService.updateUserInStorage(oldEmail, loggedUser);
+    if (updateSuccess) {
+      // Actualizar el usuario logueado en el almacenamiento
+      this.storageService.saveLoggedUser(loggedUser);
+      alert('Email updated successfully.');
+      // Limpiar formularios
+      this.newEmail.set('');
+      this.currentPasswordEmail.set('');
+    } else {
+      alert('Error updating email. Please try again.');
     }
-    
-    // **Ajuste clave aquí:**
-    // Verificar si el email ya está en uso por OTRA cuenta (diferente a la actual)
-    const users = this.storageService.getUsers();
-    const emailInUse = users.some(user => user.email === newEmailVal && user.email !== oldEmail);
+  }
+  // Actualizar Password
+  changePassword(currentPassword:string,newPassword:string,confirmNewPassword:string): void {
+    // Obtener el usuario logueado
+    const loggedUser = this.storageService.getLoggedUser();
 
-    if (emailInUse) {
-        alert('This email is already in use by another account.');
-        return;
+    if (loggedUser && loggedUser.password !== currentPassword) {
+      alert('Current password is incorrect.');
+      return;
     }
-
-    // Actualiza email en objeto loggedUser (ESTO ES CORRECTO)
-    loggedUser.email = newEmailVal; 
-
-    // Persistir cambios: primero en users, luego en loggedUser
-    // oldEmail: email ANTERIOR usado para buscar en el array de users
-    // loggedUser: objeto con el email NUEVO para actualizar
-    const updated = this.storageService.updateUserInStorage(oldEmail, loggedUser);
-    
-    if (!updated) {
-        // Si falló, mostramos el error y detenemos (eliminamos el fallback complejo)
-        alert('Could not update user in storage. User not found by previous email.');
-        return;
+    // Validar que las nuevas contraseñas coincidan
+    if (newPassword !== confirmNewPassword) {
+      alert('New passwords do not match.');
+      return;
     }
-
-    // El loggedUser ya tiene el nuevo email, lo guardamos
-    this.saveLoggedUser(loggedUser);
-    console.log('[SettingsComponent] loggedUser updated:', loggedUser);
-
-    alert('Email updated successfully ✅');
-    this.newEmail.set('');
-    this.currentPasswordEmail.set('');
-}
-
-onUpdatePassword(): void {
-  const loggedUser = this.getLoggedUser();
-
-  if (!loggedUser) {
-    alert('No user logged in.');
-    return;
-  }
-
-  const oldEmail = loggedUser.email; // <- usar este, no el que cambie después
-
-  const newPwd = this.newPassword(); 
-  const confirmPwd = this.confirmNewPassword();
-
-  if (loggedUser.password !== this.currentPassword()) {
-    alert('Current password is incorrect.');
-    return;
-  }
-
-  if (!this.registerUserService.passwordsMatch(newPwd, confirmPwd)) {
-    alert('Passwords do not match.');
-    return;
-  }
-
-  loggedUser.password = newPwd;
-
-  const updated = this.storageService.updateUserInStorage(oldEmail, loggedUser);
-
-  if (!updated) {
-    alert('Could not update user in storage. User not found by previous email.');
-    return;
-  }
-
-  this.saveLoggedUser(loggedUser);
-  alert('Password updated successfully ✅');
-
-  this.currentPassword.set('');
-  this.newPassword.set('');
-  this.confirmNewPassword.set('');
-}
-
+    // Cambiar la contraseña
+    this.storageService.changePassword(currentPassword, newPassword);
+  } 
 }

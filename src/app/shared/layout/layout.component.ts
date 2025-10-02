@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterOutlet, RouterLinkActive, Router } from '@angular/router';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-layout',
@@ -9,5 +10,13 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
+  constructor(
+    private storageService: StorageService,
+    private router: Router
+  ) {}
 
+  onLogout(): void {
+    this.storageService.logout();
+    this.router.navigate(['/']);
+  }
 }
