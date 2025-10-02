@@ -17,18 +17,18 @@ export class StorageService {
 
   constructor() {}
 
-  // 1 primero debo obtener todos los usuarios registrados
+  // 1 get all the users locally stored
   getAllUsers(): User[] {
     const usersJson = localStorage.getItem(this.USERS_KEY);
     return usersJson ? JSON.parse(usersJson) : [];
   }
 
-  // 2 luego debo guardar en una lista los usuarios que obtuve
+  // 2 save all users
   saveAllUsers(users: User[]): void {
     localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
   }
 
-  // 3 no obstante debo obtener el usuario que ha iniciado sesión osea el logeado
+  // 3 get user logged in
   getLoggedUser(): User | null {
     try {
       console.log('esto si cogio al usuario logeado');
@@ -38,12 +38,12 @@ export class StorageService {
       return null;
     }
   }
-  // 4 guardar el usuario que ha iniciado sesión
+  // 4 save user logged in
   saveLoggedUser(user: User): void {
     localStorage.setItem(this.LOGGED_USER_KEY, JSON.stringify(user));
   }
 
-  // 5 actualizar el usuario en la lista de usuarios
+  // 5 update user in storage
   updateUserInStorage(oldEmail: string, updatedUser: User): boolean {
     const users = this.getAllUsers();
     const userIndex = users.findIndex((user) => user.email === oldEmail);
@@ -70,17 +70,17 @@ export class StorageService {
     }
   }
 
-  // 6 cerrar sesión (logout)
+  // 6 logout
   logout(): void {
     localStorage.removeItem(this.LOGGED_USER_KEY);
   }
 
-  // 7 verificar si hay usuario logueado
+  // 7 check if user is logged in
   isUserLoggedIn(): boolean {
     return this.getLoggedUser() !== null;
   }
 
-  // 8 verificar si un email ya existe
+  // 8 check if email exists
   emailExists(email: string): boolean {
     const users = this.getAllUsers();
     return users.some(user => user.email === email);

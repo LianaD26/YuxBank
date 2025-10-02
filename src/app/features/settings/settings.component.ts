@@ -13,14 +13,13 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class SettingsComponent {
-  // Formularios (signals)
+  // Forms (signals)
   newEmail = signal('');
   currentPasswordEmail = signal('');
   currentPassword = signal('');
   newPassword = signal('');
   confirmNewPassword = signal('');
 
-  // Estado para mostrar formulario
   selectedOption: 'email' | 'password' = 'email';
 
   constructor(
@@ -36,54 +35,53 @@ export class SettingsComponent {
     return this.storageService.getLoggedUser();
   }
 
-  // Actualizar Email
+  // update Email
   changeEmail(newEmail:string,currentPassword:string): void {
-    // Obtener el usuario logueado
     const loggedUser = this.storageService.getLoggedUser();
 
-    //validadr constraseña actual
+    //check password
     if (!loggedUser || loggedUser.password !== currentPassword) {
       alert('Current password is incorrect.');
       return;
     }
-    // Validar que el nuevo email no esté en uso
+    // check if new email is different
     if (this.registerUserService.emailExists(newEmail)) {
       alert('The new email is already in use. Please choose another one.');
       return;
     }
-    // actualizar email anterior para la búsqueda
+    // update email
     const oldEmail = loggedUser.email;
     // actualizar el email en el objeto del usuario logueado
     loggedUser.email = newEmail;
 
-    // Actualizar el usuario en el almacenamiento
+    // update email in storage
     const updateSuccess = this.storageService.updateUserInStorage(oldEmail, loggedUser);
     if (updateSuccess) {
-      // Actualizar el usuario logueado en el almacenamiento
+      // update logged user in session
       this.storageService.saveLoggedUser(loggedUser);
       alert('Email updated successfully.');
-      // Limpiar formularios
+      // clear form
       this.newEmail.set('');
       this.currentPasswordEmail.set('');
     } else {
       alert('Error updating email. Please try again.');
     }
   }
-  // Actualizar Password
+  // update Password
   changePassword(currentPassword:string,newPassword:string,confirmNewPassword:string): void {
-    // Obtener el usuario logueado
+    // get logged user
     const loggedUser = this.storageService.getLoggedUser();
 
     if (loggedUser && loggedUser.password !== currentPassword) {
       alert('Current password is incorrect.');
       return;
     }
-    // Validar que las nuevas contraseñas coincidan
     if (newPassword !== confirmNewPassword) {
       alert('New passwords do not match.');
       return;
     }
-    // Cambiar la contraseña
+    // change password
     this.storageService.changePassword(currentPassword, newPassword);
+    alert('Password updated successfully.');
   } 
 }
