@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  //datos del servicio
   name=signal('');
   last_name= signal('');
   email= signal('');
@@ -20,7 +19,6 @@ export class RegisterComponent {
   confirm_password= signal('');
 
   constructor(private registerUserService: RegisterUserService, private router: Router) {}
-  //merodos para acatualizar los valores de los signals
   updateName(value: string): void {
     this.name.set(value);
   } 
@@ -41,7 +39,6 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    //registrar usuario
     if (this.registerUserService.emailExists(this.email())) {
       alert('El correo electrónico ya está en uso. Por favor, elige otro.');
       return;

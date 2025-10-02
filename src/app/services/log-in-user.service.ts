@@ -23,13 +23,11 @@ export class LogInUserService {
   }
   
 
-  //verificar si el email y la contraseña coinciden
   public validateEmailAndPassword(email: string, password: string): boolean {
     const logInUsers = this.getAllLogInUsers();
     return logInUsers.some(user => user.email === email && user.password === password);
   }
 
-  //entrar al sistema
   private logInUser(email: string, password: string): boolean {
     const permiso= this.validateEmailAndPassword(email, password);
     if (permiso) {

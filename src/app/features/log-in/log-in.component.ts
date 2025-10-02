@@ -14,7 +14,7 @@ import { StorageService } from '../../services/storage.service';
 })
 
 export class LogInComponent {
-  //datos del servicio en signals
+  // data binding con signals
   email = signal('');
   password = signal('');
   constructor(
@@ -23,7 +23,7 @@ export class LogInComponent {
     private storageService: StorageService
   ) { }
 
-  //merodos para acatualizar los valores de los signals
+  // update values from the form
   updateEmail(value: string): void {
     this.email.set(value);
   }
@@ -31,17 +31,16 @@ export class LogInComponent {
     this.password.set(value);
   }
   onSubmit(): void {
-    // Obtener todos los usuarios registrados
     const users = this.storageService.getAllUsers();
     
-    // Buscar usuario por email y password
+    // find user with matching email and password
     const foundUser = users.find(user => 
       user.email === this.email() && 
       user.password === this.password()
     );
     
     if (foundUser) {
-      // Guardar usuario como logueado en localStorage
+      // save logged user and navigate to products page
       this.storageService.saveLoggedUser(foundUser);
       this.router.navigate(['/products']);
     } else {

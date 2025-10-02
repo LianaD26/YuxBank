@@ -24,7 +24,6 @@ export class RegisterUserService {
     } 
   }
 
-  /* extraer usuarios existentes del localStorage */
   public getAllUsers(): User[] {
     try {
       const users = localStorage.getItem(this.STORAGE_KEY);
@@ -35,18 +34,15 @@ export class RegisterUserService {
     }
   }
 
-  /* verificar si el email ya existe */
   public emailExists(email: string): boolean {
     const users = this.getAllUsers();
     return users.some(user => user.email === email);
   }
   
-  /* verificar que password sea igual a confirm_password */
   public passwordsMatch(password: string, confirm_password: string): boolean {
     return password === confirm_password;
   }
   
-  /* verificar si el usuario cumple las reglas (solo email único y contraseñas iguales) */
   public isUserValid(user: User): boolean {
     return (
       !this.emailExists(user.email) &&
@@ -54,7 +50,6 @@ export class RegisterUserService {
     );
   }
 
-  /* registrar usuario */
   public registerUser(user: User): boolean {
     if (this.isUserValid(user)) {
       const users = this.getAllUsers();
