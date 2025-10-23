@@ -1,0 +1,91 @@
+/* Pocket Manager component styles (scoped) */
+.pocket-manager {
+    border: 1px solid #e0e0e0;
+    padding: 16px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    font-family: inherit;
+}
+
+.pocket-manager .form-group,
+.pocket-manager .field-container {
+    margin-bottom: 12px;
+    position: relative; 
+}
+
+.pocket-manager .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #222;
+}
+
+.pocket-manager input,
+.pocket-manager textarea,
+.pocket-manager select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.pocket-manager input:focus,
+.pocket-manager textarea:focus,
+.pocket-manager select:focus {
+    outline: none;
+    border-color: #8aa632;
+    box-shadow: 0 0 0 4px rgba(138, 166, 50, 0.12);
+}
+
+.pocket-manager button {
+    background-color: #8aa632;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color .12s ease, transform .08s ease;
+}
+
+.pocket-manager button:hover {
+    background-color: #729026;
+}
+
+.pocket-manager button:active {
+    transform: translateY(1px);
+}
+
+.pocket-manager button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+
+.pocket-manager .field-container label {
+    position: absolute;
+    top: -9px;
+    left: 10px;
+    background-color: #fff; 
+    color: #6b6b6b;
+    padding: 0 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    pointer-events: none;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+
+.pocket-manager .helper-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 4px;
+}
+
