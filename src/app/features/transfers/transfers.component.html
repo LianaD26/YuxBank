@@ -1,4 +1,34 @@
-<p>transfers works!</p>
-<main class="container">
+<div class="main-transfers">
+  <section class="information-section">
+    <h2>money moves and transfers</h2>
+    <p>in this page you can make transfers as well as manage your transaction history.</p>
+  </section>
+
+  <section class="image_section">
+    <!-- Usar ruta desde la raíz: archivos en `public/` se copian al build output según angular.json -->
+    <img src="/general/transfers.png" alt="Illustration representing money transfers">
+  </section>
+
+  <section class="transfer-history-section">
+    <div class="page-button">
+        <button 
+          (click)="selectPage('transfer')"
+          aria-label="Select Transfer Page"
+        >
+          make transfer
+        </button>
+    </div>
+
+    <div class="page-button">
+        <button 
+          (click)="selectPage('history')"
+          aria-label="Select History Page"
+        >
+          transaction history
+        </button>
+      </div>
+  </section>
+  
+  <!-- Router outlet para renderizar las rutas hijas (transfer/history) -->
   <router-outlet></router-outlet>
-</main>
+</div>

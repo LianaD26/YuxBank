@@ -44,10 +44,9 @@ export const routes: Routes = [
         { path: 'view', component: ViewAccountsComponent },
       ]},
       { path: 'settings', component: SettingsComponent },
-      { path: 'transfers', component: TransfersComponent, children: [
-        { path: 'history', component: HistoryComponent },
-        { path: 'transfer', component: TransferComponent }
-      ]},
+      { path: 'transfers', component: TransfersComponent },
+      { path: 'transfers/transfer', component: TransferComponent },
+      { path: 'transfers/history', component: HistoryComponent },
       { path: 'limits', component: LimitsComponent },
       { path: 'pockets', component: PocketsComponent },
     ]
