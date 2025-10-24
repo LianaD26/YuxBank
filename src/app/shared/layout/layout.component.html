@@ -10,10 +10,12 @@
       <a routerLink="/products" routerLinkActive="active" class="dropbtn">
         Products
       </a>
-      <ul class="dropdown-content">
-        <li><a routerLink="/products/register" routerLinkActive="active">Register Account</a></li>
-        <li><a routerLink="/products/view" routerLinkActive="active">View Accounts</a></li>
-      </ul>
+      
+    <ul class="dropdown-content">
+      <li><a routerLink="/products/register" class="dropdown-item" (click)="$event.stopPropagation()">Register Account</a></li>
+      <li><a routerLink="/products/view" class="dropdown-item" (click)="$event.stopPropagation()">View Accounts</a></li>
+    </ul>
+
     </li>
     <li><a routerLink="/settings" routerLinkActive="active" class="dropbtn">Settings</a></li>
     <li class="dropdown">

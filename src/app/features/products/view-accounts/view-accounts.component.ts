@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
   selector: 'app-view-accounts',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './view-accounts.component.html',
-  styleUrl: './view-accounts.component.css'
+  styleUrls: ['./view-accounts.component.css'] // corrected: "styleUrls" instead of "styleUrl"
 })
 export class ViewAccountsComponent {
+  private accountService = inject(AccountService);
 
+  accounts = signal(this.accountService.getAccounts());
+
+  deleteAccount(accountNumber: string) {
+    this.accountService.deleteAccount(accountNumber);
+    this.accounts.set(this.accountService.getAccounts());
+  }
 }

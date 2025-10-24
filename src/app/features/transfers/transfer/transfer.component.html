@@ -1,1 +1,54 @@
-<p>transfer works!</p>
+<div class="transfer-container">
+  <h2>Transfer Money</h2>
+
+  <form class="transfer-form" (ngSubmit)="onSubmit()">
+    <label for="sourceAccount">Source Account:</label>
+    <select
+      id="sourceAccount"
+      name="sourceAccount"
+      [ngModel]="sourceAccount()"
+      (ngModelChange)="sourceAccount.set($event)"
+      required
+    >
+      <option value="" disabled selected>Select account</option>
+      <option *ngFor="let account of accounts()" [value]="account.number">
+        {{ account.type }} - {{ account.number }}
+      </option>
+    </select>
+
+    <label for="destinationType">Destination Account Type:</label>
+    <input
+      type="text"
+      id="destinationType"
+      name="destinationType"
+      [ngModel]="destinationType()"
+      (ngModelChange)="destinationType.set($event)"
+      placeholder="e.g. Savings"
+      required
+    />
+
+    <label for="destinationAccount">Destination Account:</label>
+    <input
+      type="text"
+      id="destinationAccount"
+      name="destinationAccount"
+      [ngModel]="destinationAccount()"
+      (ngModelChange)="destinationAccount.set($event)"
+      placeholder="Account number"
+      required
+    />
+
+    <label for="amount">Amount:</label>
+    <input
+      type="number"
+      id="amount"
+      name="amount"
+      [ngModel]="amount()"
+      (ngModelChange)="amount.set($event)"
+      placeholder="Enter amount"
+      required
+    />
+
+    <button type="submit">Send</button>
+  </form>
+</div>

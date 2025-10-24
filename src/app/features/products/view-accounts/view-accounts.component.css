@@ -1,0 +1,66 @@
+/* --- ACCOUNTS TABLE --- */
+.accounts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.accounts-table th {
+  background-color: #8aa632;
+  color: white;
+  text-align: center;
+  padding: 0.75rem;
+  font-weight: 600;
+}
+
+.accounts-table td {
+  text-align: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.accounts-table tr:hover {
+  background-color: #f2f8f2;
+}
+
+/* --- BUTTONS INSIDE THE TABLE --- */
+.accounts-table button {
+  background-color: #dce53f;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.accounts-table button:hover {
+  background-color: #c4d52a;
+}
+
+.accounts-table button:active {
+  background-color: #aebd23;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .register-account-container {
+    width: 95vw;
+    padding: 1.5rem;
+  }
+
+  .form {
+    padding: 1.5rem;
+  }
+
+  .accounts-table th,
+  .accounts-table td {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
