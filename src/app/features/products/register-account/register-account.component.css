@@ -1,0 +1,116 @@
+/* --- MAIN CONTAINER --- */
+.register-account-container {
+  width: 90vw;
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 2rem 3rem;
+  background-color: #f8faf8;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* --- HEADINGS --- */
+.register-account-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #8aa632;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.register-account-container h3 {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  color: #4a4a4a;
+}
+
+/* --- FORM --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #79c8c6;
+  border-radius: 15px;
+  padding: 2rem;
+  gap: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form label {
+  align-self: flex-start;
+  margin-left: calc(50% - 150px);
+  font-weight: 600;
+  color: #333;
+}
+
+.form select,
+.form input {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form select:focus,
+.form input:focus {
+  outline: none;
+  border-color: #dce53f;
+  box-shadow: 0 0 5px rgba(220, 229, 63, 0.4);
+}
+
+/* --- REGISTER BUTTON --- */
+.form button[type="submit"] {
+  margin-top: 1rem;
+  background-color: #8aa632;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form button[type="submit"]:hover {
+  background-color: #7a9429;
+}
+
+.form button[type="submit"]:active {
+  background-color: #6b7a24;
+}
+
+/* --- SEPARATOR --- */
+hr {
+  margin: 2rem auto;
+  border: 0;
+  height: 2px;
+  background: #dce53f;
+  width: 60%;
+  border-radius: 2px;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .register-account-container {
+    width: 95vw;
+    padding: 1.5rem;
+  }
+
+  .form {
+    padding: 1.5rem;
+  }
+
+  .accounts-table th,
+  .accounts-table td {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}

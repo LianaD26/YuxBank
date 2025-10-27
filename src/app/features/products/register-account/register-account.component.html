@@ -1,1 +1,20 @@
-<p>register-account works!</p>
+<div class="register-account-container">
+  <h2>Register Account</h2>
+
+  <form (ngSubmit)="registerAccount()" class="form">
+    <label for="accountType">Account type:</label>
+    <select id="accountType" [ngModel]="accountType()" name="accountType" (ngModelChange)="accountType.set($event)" required>
+      <option value="" disabled selected>Select a type</option>
+      <option value="Savings">Savings</option>
+      <option value="Checking">Checking</option>
+    </select>
+
+    <label for="accountNumber">Account number:</label>
+    <input type="text" id="accountNumber" name="accountNumber" [ngModel]="accountNumber()" (ngModelChange)="accountNumber.set($event)" required />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" [ngModel]="password()" (ngModelChange)="password.set($event)" required />
+
+    <button type="submit">Register</button>
+  </form>
+</div>
