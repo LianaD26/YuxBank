@@ -1,0 +1,28 @@
+<div class="pockets-container">
+    <div class="header-info">
+        <h2>Welcome to create pockets</h2>
+        <p>Here you can create and manage your pockets for better organization of your items.</p>
+    </div>
+
+    <div class="pocket-create">
+        <button type="button" (click)="openPocketManager()">Create Pocket</button>
+    </div>
+
+    <!-- Modal backdrop -->
+    <div class="modal-backdrop" *ngIf="showPocketManager" (click)="closePocketManager()" aria-hidden="true"></div>
+
+    <!-- Modal dialog -->
+    <div class="modal" *ngIf="showPocketManager" role="dialog" aria-modal="true" aria-labelledby="pocketManagerTitle">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="pocketManagerTitle">Create Pocket</h3>
+                <button type="button" class="modal-close" (click)="closePocketManager()" aria-label="Close">X</button>
+            </header>
+            <section class="modal-body">
+                <!-- Incluir el componente Pocket Manager dentro del modal -->
+                <app-pocket-manager (created)="onPocketCreated($event)"></app-pocket-manager>
+            </section>
+        </div>
+    </div>
+
+</div>

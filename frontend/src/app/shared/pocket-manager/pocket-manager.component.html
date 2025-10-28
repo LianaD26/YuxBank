@@ -1,0 +1,20 @@
+<div class="pocket-manager">
+    <form (ngSubmit)="createPocket(pocketForm)" #pocketForm="ngForm" novalidate>
+        
+        <div class="form-group">
+            <label for="pocket-name">Pocket Name:</label>
+            <input type="text" id="pocket-name" name="name" required [(ngModel)]="name">
+        </div>
+
+        <div class="form-group">
+            <label for="pocket-description">Description:</label>
+            <textarea id="pocket-description" name="description" rows="4" [(ngModel)]="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="pocket-value">Value:</label>
+            <input type="number" id="pocket-value" name="value" required [(ngModel)]="value">
+        </div>
+        <button type="submit" [disabled]="pocketForm.invalid">Create Pocket</button>    
+    </form>
+</div>

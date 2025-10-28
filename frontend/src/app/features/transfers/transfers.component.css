@@ -1,0 +1,65 @@
+.main-transfers {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100vh; 
+  position: relative;
+}
+.routes {
+  flex: 0 0 260px; 
+  height: 100%;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  background: #fff;
+}
+.serchbar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.serchbar app-serch-bar,
+.serchbar ::ng-deep app-serch-bar {
+  display: block;
+  height: 100%;
+}
+
+/* Contenido principal */
+.other-section {
+  flex: 1 1 auto;
+  padding: 28px;
+  overflow: auto; /* scroll interno si hay mucho contenido */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Centrado: alinear y justificar para centrar el wrapper en ambas direcciones */
+  align-items: center; /* centra horizontalmente */
+  justify-content: center; /* centra verticalmente */
+}
+
+.information-section {
+  text-align: left;
+  width: 100%;
+}
+
+.image_section {
+  margin: 0;
+  max-width: 720px;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* centrar imagen dentro del wrapper */
+}
+
+/* El wrapper que centra el contenido y limita el ancho para lectura */
+.content-wrapper {
+  width: 100%;
+  max-width: 980px; /* ajustar según preferencia */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center; /* centra los elementos hijos horizontalmente */
+}
+
+.information-section {
+  margin-top: -200px;
+  text-align: center;
+  width: 100%;
+}

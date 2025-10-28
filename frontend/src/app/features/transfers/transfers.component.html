@@ -1,0 +1,25 @@
+<div class="main-transfers">
+  
+  <div class="routes"> 
+    <section class="serchbar">
+      <app-serch-bar [routes]="sidebarRoutes"></app-serch-bar>
+    </section>
+  </div>
+
+  <div class="other-section">
+    <div class="content-wrapper">
+      <section class="information-section">
+        <h2>money moves and transfers</h2>
+        <p>in this page you can make transfers as well as manage your transaction history.</p>
+      </section>
+
+      <section class="image_section">
+        <!-- Usar ruta desde la raíz: archivos en `public/` se copian al build output según angular.json -->
+        <img src="/general/transfers.png" alt="Illustration representing money transfers">
+      </section>
+
+      <!-- Router outlet para renderizar las rutas hijas (transfer/history) -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
