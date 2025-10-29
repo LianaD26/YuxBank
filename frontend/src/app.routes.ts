@@ -8,8 +8,6 @@ import { LimitsComponent } from './app/features/limits/limits.component';
 import { PocketsComponent } from './app/features/pockets/pockets.component';
 import { SettingsComponent } from './app/features/settings/settings.component';
 import { LayoutComponent } from './app/shared/layout/layout.component';
-import { HistoryComponent } from './app/features/transfers/history/history.component';
-import { TransferComponent } from './app/features/transfers/transfer/transfer.component';
 import { RegisterComponent } from './app/features/register/register.component';
 import { LogInComponent } from './app/features/log-in/log-in.component';
 import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.component';
@@ -45,8 +43,6 @@ export const routes: Routes = [
       ]},
       { path: 'settings', component: SettingsComponent },
       { path: 'transfers', component: TransfersComponent },
-      { path: 'transfers/transfer', component: TransferComponent },
-      { path: 'transfers/history', component: HistoryComponent },
       { path: 'limits', component: LimitsComponent },
       { path: 'pockets', component: PocketsComponent },
     ]

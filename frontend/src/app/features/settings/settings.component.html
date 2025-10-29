@@ -2,12 +2,17 @@
   <!-- Sidebar -->
   <div class="routes"> 
     <section class="serchbar">
-      <app-serch-bar [routes]="sidebarRoutes"></app-serch-bar>
+      <!-- Enviamos las rutas y escuchamos cuando el usuario selecciona una -->
+      <app-serch-bar 
+        [routes]="sidebarRoutes"
+        (optionSelected)="selectOption($event)">
+      </app-serch-bar>
     </section>
   </div>
+
   <!-- Content -->
   <div class="settings-content">
-    
+
     <!-- Change Email Form -->
     <form 
       *ngIf="selectedOption === 'email'" 
@@ -42,6 +47,7 @@
 
       <button type="submit" class="btn-submit">Update Email</button>
     </form>
+
     <!-- Change Password Form -->
     <form 
       *ngIf="selectedOption === 'password'"

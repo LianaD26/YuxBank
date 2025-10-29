@@ -9,6 +9,7 @@
   border-radius: 18px; /* slightly more rounded */
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
   margin: 5px;
+  font-family: poppins, sans-serif;
 }
 
 .settings-sidebar h2 {
@@ -61,7 +62,7 @@
 .settings-sidebar li span {
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
 }
 
 /* focus state for keyboard users */

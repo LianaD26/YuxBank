@@ -1,12 +1,8 @@
-  <div class="settings-sidebar">
-    <h2>Settings</h2>
-    <ul>
-      <li *ngFor="let item of routes"
-          [class.active]="selectedOption === item.key"
-          (click)="selectOption(item)"
-          tabindex="0"
-      >
-  <span class="label">{{ item['label'] ? item['label'] : (item.key | titlecase) }}</span>
-      </li>
-    </ul>
-  </div>
+<ul class="settings-sidebar">
+  <li
+    *ngFor="let item of routes"
+    [class.active]="selectedOption === item.key"
+    (click)="selectOption(item)">
+    <span>{{ item.label || (item.key | titlecase) }}</span>
+  </li>
+</ul>

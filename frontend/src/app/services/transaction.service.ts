@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { Transaction } from '../features/transfers/history/transaction.model';
+import { Transaction } from '../features/transfers/transaction.model';
 
 // Mock data small set (same as previous implementation)
 const MOCK_TRANSACTIONS: Transaction[] = [
-  { id: 't1', date: new Date().toISOString(), amount: -45.5, currency: 'USD', type: 'debit', fromAccountId: 'A1', status: 'completed', merchant: { name: 'Supermarket' }, description: 'Groceries' },
-  { id: 't2', date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), amount: 1200, currency: 'USD', type: 'credit', toAccountId: 'A1', status: 'completed', merchant: { name: 'Salary' }, description: 'Monthly salary' },
-  { id: 't3', date: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), amount: -12.75, currency: 'USD', type: 'debit', fromAccountId: 'A1', status: 'completed', merchant: { name: 'Coffee Shop' }, description: 'Coffee' },
-  { id: 't4', date: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), amount: -250, currency: 'USD', type: 'transfer', fromAccountId: 'A1', toAccountId: 'A2', status: 'completed', description: 'Transfer to savings' }
+  { id: 't1', date: new Date(), amount: -45.5, currency: 'USD', type: 'debit', status: 'completed', merchant: { name: 'Supermarket' }, description: 'Groceries' },
+  { id: 't2', date: new Date(Date.now() - 1000 * 60 * 60 * 24), amount: 1200, currency: 'USD', type: 'credit', status: 'completed', merchant: { name: 'Salary' }, description: 'Monthly salary' },
+  { id: 't3', date: new Date(Date.now() - 1000 * 60 * 60 * 48), amount: -12.75, currency: 'USD', type: 'debit', status: 'completed', merchant: { name: 'Coffee Shop' }, description: 'Coffee' },
+  { id: 't4', date: new Date(Date.now() - 1000 * 60 * 60 * 72), amount: -250, currency: 'USD', type: 'transfer', status: 'completed', description: 'Transfer to savings' }
 ];
 
 @Injectable({ providedIn: 'root' })

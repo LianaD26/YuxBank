@@ -1,25 +1,151 @@
-<div class="main-transfers">
-  
-  <div class="routes"> 
+<div class="transfers-container">
+
+  <div class="transfers-sidebar"> 
     <section class="serchbar">
-      <app-serch-bar [routes]="sidebarRoutes"></app-serch-bar>
+      <app-serch-bar 
+        [routes]="sidebarRoutes"
+        (optionSelected)="selectPage($event)">
+      </app-serch-bar>
     </section>
   </div>
 
-  <div class="other-section">
+  <div class="transfers-content">
     <div class="content-wrapper">
-      <section class="information-section">
-        <h2>money moves and transfers</h2>
-        <p>in this page you can make transfers as well as manage your transaction history.</p>
-      </section>
+      
+      <!-- Sección de transferencias -->
+      <div *ngIf="selectedPage === 'transfer'" class="transfer-section">
+        <div class="container-information-section">
+          <section class="information-section">
+            <h2>Transfer Funds</h2>
+            <p>here you can make your transfers easily and securely. Fill in the details below to proceed with your transfer.
+                first you need to select the account to transfer from and the account to transfer to, then enter the amount and any additional details required.
+                ¡make sure to review all the information before confirming the transfer!
+            </p>
+          </section>
+        </div>
 
-      <section class="image_section">
-        <!-- Usar ruta desde la raíz: archivos en `public/` se copian al build output según angular.json -->
-        <img src="/general/transfers.png" alt="Illustration representing money transfers">
-      </section>
+        <div class="container-transaction-section">
+          <section class="transaction-section">
+            <div class="transfer-options">
+              <button (click)="openModal('same')" class="opt">Transferencias al mismo banco</button>
+              <button (click)="openModal('other')" class="opt">Transferencia a otro banco</button>
+              <button (click)="openModal('schedule')" class="opt">Programar transferencia</button>
+            </div>
 
-      <!-- Router outlet para renderizar las rutas hijas (transfer/history) -->
-      <router-outlet></router-outlet>
+            <!-- Modal de transferencias -->
+            <div class="modal-backdrop" *ngIf="showModal">
+              <div class="modal" role="dialog" aria-modal="true">
+                <header class="modal-header">
+                  <h3 *ngIf="modalType==='same'">Transferencia - Mismo banco</h3>
+                  <h3 *ngIf="modalType==='other'">Transferencia - Otro banco</h3>
+                  <h3 *ngIf="modalType==='schedule'">Programar transferencia</h3>
+                  <button class="close" (click)="closeModal()" aria-label="Cerrar">×</button>
+                </header>
+
+                <form (submit)="onSubmit($event)" class="modal-body">
+                  <!-- Common fields -->
+                  <label>
+                    Cuenta origen
+                    <input name="fromAccount" placeholder="Cuenta origen" />
+                  </label>
+
+                  <label *ngIf="modalType==='same' || modalType==='schedule'">
+                    Cuenta destino (mismo banco)
+                    <input name="toAccountSame" placeholder="Cuenta destino" />
+                  </label>
+
+                  <label *ngIf="modalType==='other'">
+                    Banco destino
+                    <input name="bankName" placeholder="Nombre del banco" />
+                  </label>
+
+                  <label *ngIf="modalType==='other'">
+                    Cuenta destino (otro banco)
+                    <input name="toAccountOther" placeholder="Cuenta destino (otro banco)" />
+                  </label>
+
+                  <label>
+                    Monto
+                    <input name="amount" placeholder="0.00" />
+                  </label>
+
+                  <label *ngIf="modalType==='schedule'">
+                    Fecha programada
+                    <input name="date" type="date" />
+                  </label>
+
+                  <label>
+                    Descripción
+                    <input name="description" placeholder="Concepto (opcional)" />
+                  </label>
+
+                  <footer class="modal-footer">
+                    <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Enviar</button>
+                  </footer>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Sección de historial -->
+      <div *ngIf="selectedPage === 'history'" class="history-section">
+        <div class="history-container">
+          <div class="history-actual">
+            <h2>Transaction History</h2>
+            <p>Review your past transactions and transfers here.</p>
+          </div>
+
+          <div class="history-list card">
+            <div class="filter-bar">
+              <input type="search" placeholder="Buscar transacciones..." (input)="search$.next($any($event.target).value)">
+              <div class="spacer"></div>
+              <div *ngIf="isLoading" class="loading">Loading...</div>
+            </div>
+
+            <div class="list">
+              <ng-container *ngIf="transactions$ | async as txs">
+                <div *ngIf="txs.length === 0" class="empty">No transactions found</div>
+                <div *ngFor="let tx of txs" class="history-item" (click)="openDetail(tx)" role="button" tabindex="0">
+                  <div class="item-row">
+                    <div class="item-left">
+                      <div class="tx-date">{{ tx.date | date:'medium' }}</div>
+                      <div class="tx-desc">{{ tx.merchant?.name || tx.description }}</div>
+                    </div>
+                    <div class="item-right">
+                      <div class="tx-amount" [class.debit]="tx.amount < 0" [class.credit]="tx.amount > 0">{{ tx.amount | currency:tx.currency }}</div>
+                      <div class="tx-status">{{ tx.status }}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Modal de detalles -->
+          <div class="modal-backdrop" *ngIf="selectedTx" (click)="closeDetail()"></div>
+          <div class="modal" *ngIf="selectedTx" role="dialog" aria-modal="true">
+            <div class="modal-content">
+              <header class="modal-header">
+                <h3>Transaction detail</h3>
+                <button type="button" class="modal-close" (click)="closeDetail()" aria-label="Close">×</button>
+              </header>
+              <section class="modal-body">
+                <p><strong>ID:</strong> {{ selectedTx.id }}</p>
+                <p><strong>Date:</strong> {{ selectedTx.date | date:'full' }}</p>
+                <p><strong>Amount:</strong> {{ selectedTx.amount | currency:selectedTx.currency }}</p>
+                <p><strong>Type:</strong> {{ selectedTx.type }}</p>
+                <p><strong>Status:</strong> {{ selectedTx.status }}</p>
+                <p *ngIf="selectedTx.merchant"><strong>Merchant:</strong> {{ selectedTx.merchant.name }}</p>
+                <p *ngIf="selectedTx.description"><strong>Description:</strong> {{ selectedTx.description }}</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

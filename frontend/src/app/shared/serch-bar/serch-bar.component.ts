@@ -1,32 +1,27 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule, NgForOf, TitleCasePipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 
-// Constante inmutable con el diccionario de rutas. Exportada para que pueda
-// reutilizarse desde otros módulos si es necesario.
-export const ROUTES_DICCCIONARY: ReadonlyArray<{ path: string; key: string; label?: string }> = [
-  { path: '/settings/email', key: 'email', label: 'email' },
-  { path: '/settings/password', key: 'password', label: 'password' }
-];
-
+// No se necesita Router porque ya no haremos navegación por rutas
 @Component({
   selector: 'app-serch-bar',
   standalone: true,
-  imports: [CommonModule, NgForOf, TitleCasePipe],
+  imports: [CommonModule, TitleCasePipe],
   templateUrl: './serch-bar.component.html',
   styleUrls: ['./serch-bar.component.css'],
 })
 export class SerchBarComponent {
-  // Permitir recibir el diccionario desde el padre; usar la constante como fallback
-  @Input() routes: ReadonlyArray<{ path: string; key: string; label?: string }> = ROUTES_DICCCIONARY;
+  // Recibe las opciones desde el padre
+  @Input() routes: ReadonlyArray<{ key: string; label?: string }> = [];
 
+  // Emite la opción seleccionada al componente padre
+  @Output() optionSelected = new EventEmitter<string>();
+  
+  // Guarda la opción activa (para resaltar visualmente)
   selectedOption: string | null = this.routes.length ? this.routes[0].key : null;
 
-  constructor(private router: Router) {}
-
-  selectOption(item: { path: string; key: string }) {
+  // Selecciona una opción del sidebar
+  selectOption(item: { key: string }) {
     this.selectedOption = item.key;
-    // Navegación programática hacia la ruta indicada
-    this.router.navigate([item.path]);
+    this.optionSelected.emit(item.key); // Notifica al padre la opción elegida
   }
 }
