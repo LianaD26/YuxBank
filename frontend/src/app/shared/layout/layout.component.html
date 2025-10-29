@@ -6,27 +6,9 @@
 
   <ul class="navbar-links">
     <!-- Products with dropdown -->
-    <li class="dropdown">
-      <a routerLink="/products" routerLinkActive="active" class="dropbtn">
-        Products
-      </a>
-      
-    <ul class="dropdown-content">
-      <li><a routerLink="/products/register" class="dropdown-item" (click)="$event.stopPropagation()">Register Account</a></li>
-      <li><a routerLink="/products/view" class="dropdown-item" (click)="$event.stopPropagation()">View Accounts</a></li>
-    </ul>
-
-    </li>
+    <li><a routerLink="/products" routerLinkActive="active" class="dropbtn">Products</a></li>
     <li><a routerLink="/settings" routerLinkActive="active" class="dropbtn">Settings</a></li>
-    <li class="dropdown">
-      <a routerLink="/transfers" routerLinkActive="active" class="dropbtn">
-        Transfers
-      </a>
-      <ul class="dropdown-content">
-        <li><a routerLink="/transfers/history" routerLinkActive="active">History</a></li>
-        <li><a routerLink="/transfers/transfer" routerLinkActive="active">Transfer</a></li>
-      </ul>
-    </li>
+    <li><a routerLink="/transfers" routerLinkActive="active">Transfers</a></li>
     <li><a routerLink="/limits" routerLinkActive="active">Limits</a></li>
     <li><a routerLink="/pockets" routerLinkActive="active">Pockets</a></li>
     <li><a (click)="onLogout()">Log Out</a></li>

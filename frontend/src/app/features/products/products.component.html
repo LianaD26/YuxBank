@@ -1,3 +1,92 @@
-<main class="container">
-  <router-outlet></router-outlet>
-</main>
+<div class="products-container">
+  <!-- Sidebar -->
+  <div class="routes"> 
+    <section class="serchbar">
+      <app-serch-bar 
+        [routes]="sidebarRoutes"
+        (optionSelected)="selectOption($event)">
+      </app-serch-bar>
+    </section>
+  </div>
+
+  <!-- Content -->
+  <div class="products-content">
+
+    <!-- Register Account Form -->
+    <form 
+      *ngIf="selectedOption === 'register'" 
+      (ngSubmit)="registerAccount()"
+      class="products-form">
+      
+      <h3>Register Account</h3>
+
+      <div class="field-container">
+        <label for="accountType">Account Type</label>
+        <input 
+          type="text" 
+          id="accountType"
+          name="accountType"
+          [ngModel]="accountType()" 
+          (ngModelChange)="accountType.set($event)" 
+          placeholder="Ej: ahorros o corriente"
+          required 
+        />
+      </div>
+
+      <div class="field-container">
+        <label for="accountNumber">Account Number</label>
+        <input 
+          type="text" 
+          id="accountNumber"
+          name="accountNumber"
+          [ngModel]="accountNumber()" 
+          (ngModelChange)="accountNumber.set($event)" 
+          placeholder="Enter account number"
+          required 
+        />
+      </div>
+
+      <div class="field-container">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password"
+          name="password"
+          [ngModel]="password()" 
+          (ngModelChange)="password.set($event)" 
+          placeholder="Enter password"
+          required 
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">Register</button>
+    </form>
+
+    <!-- View Accounts -->
+    <div 
+      *ngIf="selectedOption === 'view'"
+      class="accounts-view">
+      
+      <h3>View Accounts</h3>
+
+      <div *ngIf="accounts().length > 0; else noAccounts" class="accounts-list">
+        <div *ngFor="let account of accounts()" class="account-item">
+          <div class="account-info">
+            <strong>{{ account.type }}</strong>
+            <span>{{ account.number }}</span>
+          </div>
+          <button 
+            (click)="deleteAccount(account.number)"
+            class="btn-delete">
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noAccounts>
+        <p class="no-accounts">No accounts registered.</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>

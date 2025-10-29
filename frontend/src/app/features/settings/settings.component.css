@@ -15,21 +15,21 @@
 }
 
 .settings-form {
-  background-color: #79c8c6;
+  background-color: #ffffff;
   padding: 2rem;
   border-radius: 10px;
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .settings-form h3 {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   margin-bottom: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: #5b7900;
 }
 
 .field-container {
@@ -43,7 +43,7 @@
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   box-sizing: border-box;
 }
 
@@ -53,7 +53,7 @@
   left: 10px;
   background-color: #dce53f;
   padding: 0 5px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 
