@@ -1,0 +1,159 @@
+.products-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: poppins, sans-serif;
+}
+
+/* Sidebar - IMPORTANTE: usar .routes no .sidebar */
+.routes {
+  flex: 0 0 260px;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  min-width: 260px;
+}
+
+/* Content */
+.products-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.products-form,
+.accounts-view {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.products-form h3,
+.accounts-view h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #5b7900;
+}
+
+.field-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.field-container input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+}
+
+.field-container label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: #dce53f;
+  padding: 0 5px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.btn-submit {
+  width: 100%;
+  background-color: #8aa632;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: #6e8626;
+}
+
+/* Accounts List */
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.account-info strong {
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.account-info span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.btn-delete {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+.no-accounts {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .products-container {
+    flex-direction: column;
+  }
+
+  .routes {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .products-content {
+    padding: 1rem;
+  }
+}

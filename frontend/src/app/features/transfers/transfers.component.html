@@ -17,9 +17,16 @@
         <div class="container-information-section">
           <section class="information-section">
             <h2>Transfer Funds</h2>
+<<<<<<< HEAD
             <p>Here you can make your transfers easily and securely. Fill in the details below to proceed with your transfer.
                 First you need to select the account to transfer from and the account to transfer to, then enter the amount and any additional details required.
                 Make sure to review all the information before confirming the transfer!
+=======
+            <h3>Here you can make your transfers easily and securely.</h3>
+            <p>Fill in the details below to proceed with your transfer.
+                first you need to select the account to transfer from and the account to transfer to, then enter the amount and any additional details required.
+                ¡make sure to review all the information before confirming the transfer!
+>>>>>>> entrega_final
             </p>
           </section>
         </div>
@@ -105,7 +112,18 @@
 
           <div class="history-list card">
             <div class="filter-bar">
+<<<<<<< HEAD
               <input type="search" placeholder="Search transactions..." (input)="search$.next($any($event.target).value)">
+=======
+              <div class="search-box">
+                <input
+                  type="search"
+                  placeholder="Buscar transacciones..."
+                  (input)="search$.next($any($event.target).value)"
+                />
+                <span class="icon">🔍</span>
+            </div><br>
+>>>>>>> entrega_final
               <div class="spacer"></div>
               <div *ngIf="isLoading" class="loading">Loading...</div>
             </div>
@@ -134,8 +152,13 @@
           <div class="modal" *ngIf="selectedTx" role="dialog" aria-modal="true">
             <div class="modal-content">
               <header class="modal-header">
+<<<<<<< HEAD
                 <h3>Transaction Detail</h3>
                 <button type="button" class="modal-close" (click)="closeDetail()" aria-label="Close">×</button>
+=======
+                <h3>Transaction detail</h3>
+                <button type="button" class="modal-close" (click)="closeDetail()" aria-label="Close">X</button>
+>>>>>>> entrega_final
               </header>
               <section class="modal-body">
                 <p><strong>ID:</strong> {{ selectedTx.id }}</p>
