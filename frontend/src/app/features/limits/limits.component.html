@@ -1,1 +1,54 @@
-<p>limits works!</p>
+<div class="limits-container">
+  <div class="limits-header">
+    <h2>Configure Limits</h2>
+    <p>Set maximum limits for your transactions and pockets</p>
+  </div>
+
+  <div class="limits-form">
+    <div class="form-group">
+      <label for="sameBankLimit">
+        <span class="label-title">Same Bank Transfer Limit</span>
+        <span class="label-desc">Maximum amount allowed per transfer to the same bank</span>
+      </label>
+      <input 
+        type="number" 
+        id="sameBankLimit"
+        name="sameBankTransferLimit"
+        [(ngModel)]="limits.sameBankTransferLimit"
+        min="0"
+        placeholder="0.00">
+    </div>
+
+    <div class="form-group">
+      <label for="otherBankLimit">
+        <span class="label-title">Other Bank Transfer Limit</span>
+        <span class="label-desc">Maximum amount allowed per transfer to other banks</span>
+      </label>
+      <input 
+        type="number" 
+        id="otherBankLimit"
+        name="otherBankTransferLimit"
+        [(ngModel)]="limits.otherBankTransferLimit"
+        min="0"
+        placeholder="0.00">
+    </div>
+
+    <div class="form-group">
+      <label for="scheduledLimit">
+        <span class="label-title">Scheduled Transfer Limit</span>
+        <span class="label-desc">Maximum amount allowed per scheduled transfer</span>
+      </label>
+      <input 
+        type="number" 
+        id="scheduledLimit"
+        name="scheduledTransferLimit"
+        [(ngModel)]="limits.scheduledTransferLimit"
+        min="0"
+        placeholder="0.00">
+    </div>
+
+    <button type="button" class="btn-save" (click)="saveLimits()">
+      Save Limits
+    </button>
+  </div>
+</div>

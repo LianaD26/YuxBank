@@ -13,6 +13,8 @@ const MOCK_TRANSACTIONS: Transaction[] = [
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
+  private storageKey = 'yuxbank_transactions';
+
   constructor() {}
 
   // list with optional search filter
@@ -30,5 +32,16 @@ export class TransactionService {
   getById(id: string): Observable<Transaction | undefined> {
     const found = MOCK_TRANSACTIONS.find(t => t.id === id);
     return of(found).pipe(delay(150));
+  }
+
+  addTransaction(transaction: Transaction): void {
+    const transactions = this.getTransactionsFromStorage();
+    transactions.push(transaction);
+    localStorage.setItem(this.storageKey, JSON.stringify(transactions));
+  }
+
+  getTransactionsFromStorage(): Transaction[] {
+    const data = localStorage.getItem(this.storageKey);
+    return data ? JSON.parse(data) : [];
   }
 }

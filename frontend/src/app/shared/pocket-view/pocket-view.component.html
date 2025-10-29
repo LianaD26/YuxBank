@@ -1,0 +1,11 @@
+<div class="pocket-view">
+  <header class="pocket-header">
+    <h4 class="pocket-name">{{ pocket.name }}</h4>
+    <div class="pocket-value">{{ pocket.value | currency }}</div>
+  </header>
+  <div class="pocket-meta">
+    <small>Desde: {{ pocket.fromAccount || '—' }}</small>
+    <small class="created">{{ pocket.createdAt | date:'short' }}</small>
+  </div>
+  <p class="pocket-desc" *ngIf="pocket.description">{{ pocket.description }}</p>
+</div>

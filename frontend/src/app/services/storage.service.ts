@@ -14,6 +14,7 @@ export interface User {
 export class StorageService {
   private readonly LOGGED_USER_KEY = 'loggedUser';
   private readonly USERS_KEY = 'yuxbank_users';
+  // (La persistencia de pockets fue movida a PocketService)
 
   constructor() {}
 
@@ -85,4 +86,6 @@ export class StorageService {
     const users = this.getAllUsers();
     return users.some(user => user.email === email);
   }
+
+  // (La persistencia de pockets fue movida a PocketService)
 }

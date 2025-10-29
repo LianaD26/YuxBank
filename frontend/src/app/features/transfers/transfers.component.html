@@ -12,14 +12,14 @@
   <div class="transfers-content">
     <div class="content-wrapper">
       
-      <!-- Sección de transferencias -->
+      <!-- Transfer section -->
       <div *ngIf="selectedPage === 'transfer'" class="transfer-section">
         <div class="container-information-section">
           <section class="information-section">
             <h2>Transfer Funds</h2>
-            <p>here you can make your transfers easily and securely. Fill in the details below to proceed with your transfer.
-                first you need to select the account to transfer from and the account to transfer to, then enter the amount and any additional details required.
-                ¡make sure to review all the information before confirming the transfer!
+            <p>Here you can make your transfers easily and securely. Fill in the details below to proceed with your transfer.
+                First you need to select the account to transfer from and the account to transfer to, then enter the amount and any additional details required.
+                Make sure to review all the information before confirming the transfer!
             </p>
           </section>
         </div>
@@ -27,61 +27,66 @@
         <div class="container-transaction-section">
           <section class="transaction-section">
             <div class="transfer-options">
-              <button (click)="openModal('same')" class="opt">Transferencias al mismo banco</button>
-              <button (click)="openModal('other')" class="opt">Transferencia a otro banco</button>
-              <button (click)="openModal('schedule')" class="opt">Programar transferencia</button>
+              <button (click)="openModal('same')" class="opt">Same Bank Transfer</button>
+              <button (click)="openModal('other')" class="opt">Other Bank Transfer</button>
+              <button (click)="openModal('schedule')" class="opt">Schedule Transfer</button>
             </div>
 
-            <!-- Modal de transferencias -->
+            <!-- Transfer modal -->
             <div class="modal-backdrop" *ngIf="showModal">
               <div class="modal" role="dialog" aria-modal="true">
                 <header class="modal-header">
-                  <h3 *ngIf="modalType==='same'">Transferencia - Mismo banco</h3>
-                  <h3 *ngIf="modalType==='other'">Transferencia - Otro banco</h3>
-                  <h3 *ngIf="modalType==='schedule'">Programar transferencia</h3>
-                  <button class="close" (click)="closeModal()" aria-label="Cerrar">×</button>
+                  <h3 *ngIf="modalType==='same'">Transfer - Same Bank</h3>
+                  <h3 *ngIf="modalType==='other'">Transfer - Other Bank</h3>
+                  <h3 *ngIf="modalType==='schedule'">Schedule Transfer</h3>
+                  <button class="close" (click)="closeModal()" aria-label="Close">×</button>
                 </header>
+
+                <div class="limit-info" *ngIf="currentLimit > 0">
+                  <span class="limit-label">Transfer Limit:</span>
+                  <span class="limit-value">{{ currentLimit | currency }}</span>
+                </div>
 
                 <form (submit)="onSubmit($event)" class="modal-body">
                   <!-- Common fields -->
                   <label>
-                    Cuenta origen
-                    <input name="fromAccount" placeholder="Cuenta origen" />
+                    From Account
+                    <input name="fromAccount" placeholder="From account" />
                   </label>
 
                   <label *ngIf="modalType==='same' || modalType==='schedule'">
-                    Cuenta destino (mismo banco)
-                    <input name="toAccountSame" placeholder="Cuenta destino" />
+                    To Account (same bank)
+                    <input name="toAccountSame" placeholder="Destination account" />
                   </label>
 
                   <label *ngIf="modalType==='other'">
-                    Banco destino
-                    <input name="bankName" placeholder="Nombre del banco" />
+                    Destination Bank
+                    <input name="bankName" placeholder="Bank name" />
                   </label>
 
                   <label *ngIf="modalType==='other'">
-                    Cuenta destino (otro banco)
-                    <input name="toAccountOther" placeholder="Cuenta destino (otro banco)" />
+                    To Account (other bank)
+                    <input name="toAccountOther" placeholder="Destination account (other bank)" />
                   </label>
 
                   <label>
-                    Monto
+                    Amount
                     <input name="amount" placeholder="0.00" />
                   </label>
 
                   <label *ngIf="modalType==='schedule'">
-                    Fecha programada
+                    Scheduled Date
                     <input name="date" type="date" />
                   </label>
 
                   <label>
-                    Descripción
-                    <input name="description" placeholder="Concepto (opcional)" />
+                    Description
+                    <input name="description" placeholder="Description (optional)" />
                   </label>
 
                   <footer class="modal-footer">
-                    <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Enviar</button>
+                    <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit</button>
                   </footer>
                 </form>
               </div>
@@ -90,7 +95,7 @@
         </div>
       </div>
 
-      <!-- Sección de historial -->
+      <!-- History section -->
       <div *ngIf="selectedPage === 'history'" class="history-section">
         <div class="history-container">
           <div class="history-actual">
@@ -100,7 +105,7 @@
 
           <div class="history-list card">
             <div class="filter-bar">
-              <input type="search" placeholder="Buscar transacciones..." (input)="search$.next($any($event.target).value)">
+              <input type="search" placeholder="Search transactions..." (input)="search$.next($any($event.target).value)">
               <div class="spacer"></div>
               <div *ngIf="isLoading" class="loading">Loading...</div>
             </div>
@@ -124,12 +129,12 @@
             </div>
           </div>
 
-          <!-- Modal de detalles -->
+          <!-- Details modal -->
           <div class="modal-backdrop" *ngIf="selectedTx" (click)="closeDetail()"></div>
           <div class="modal" *ngIf="selectedTx" role="dialog" aria-modal="true">
             <div class="modal-content">
               <header class="modal-header">
-                <h3>Transaction detail</h3>
+                <h3>Transaction Detail</h3>
                 <button type="button" class="modal-close" (click)="closeDetail()" aria-label="Close">×</button>
               </header>
               <section class="modal-body">

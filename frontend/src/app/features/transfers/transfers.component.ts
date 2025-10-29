@@ -4,6 +4,8 @@ import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, switchMap, startWith, tap } from 'rxjs/operators';
 import { Transaction } from './transaction.model';
+import { LimitsService, UserLimits } from '../../services/limits.service';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-transfers',
@@ -15,7 +17,7 @@ import { Transaction } from './transaction.model';
 export class TransfersComponent implements OnInit {
   selectedPage: 'transfer' | 'history' = 'transfer';
 
-  // Rutas del sidebar (sin path ya que no navegamos)
+  // Rutas del sidebar
   sidebarRoutes = [
     { key: 'transfer' as const, label: 'Make transfer' },
     { key: 'history' as const, label: 'Transaction history' }
@@ -24,6 +26,8 @@ export class TransfersComponent implements OnInit {
   // VARIABLES PARA TRANSFERENCIAS
   showModal = false;
   modalType: 'same' | 'other' | 'schedule' | null = null;
+  currentLimit: number = 0;
+  userLimits: UserLimits | null = null;
 
   // VARIABLES PARA HISTORIAL
   search$ = new Subject<string>();
@@ -33,9 +37,15 @@ export class TransfersComponent implements OnInit {
   
   private transactionsSubject = new BehaviorSubject<Transaction[]>([]);
 
-  constructor() {}
+  constructor(
+    private limitsService: LimitsService,
+    private storageService: StorageService
+  ) {}
 
   ngOnInit() {
+    // Load user limits
+    this.loadUserLimits();
+
     // Inicializar datos de ejemplo para transacciones
     this.loadMockTransactions();
 
@@ -49,6 +59,13 @@ export class TransfersComponent implements OnInit {
     );
   }
 
+  private loadUserLimits() {
+    const logged = this.storageService.getLoggedUser();
+    if (logged) {
+      this.userLimits = this.limitsService.getLimitsForUser(logged.email);
+    }
+  }
+
   // MÉTODOS PARA NAVEGACIÓN
   selectPage(page: string) {
     if (page === 'transfer' || page === 'history') {
@@ -60,6 +77,21 @@ export class TransfersComponent implements OnInit {
   openModal(type: 'same' | 'other' | 'schedule') {
     this.modalType = type;
     this.showModal = true;
+    
+    // Set current limit based on transfer type
+    if (this.userLimits) {
+      switch(type) {
+        case 'same':
+          this.currentLimit = this.userLimits.sameBankTransferLimit;
+          break;
+        case 'other':
+          this.currentLimit = this.userLimits.otherBankTransferLimit;
+          break;
+        case 'schedule':
+          this.currentLimit = this.userLimits.scheduledTransferLimit;
+          break;
+      }
+    }
   }
 
   closeModal() {
@@ -81,12 +113,25 @@ export class TransfersComponent implements OnInit {
       description: formData.get('description')
     };
 
+    // Validate amount against limit
+    const amount = parseFloat(transferData.amount as string) || 0;
+    
+    if (this.currentLimit > 0 && amount > this.currentLimit) {
+      alert(`Transfer amount ($${amount.toFixed(2)}) exceeds the limit of $${this.currentLimit.toFixed(2)} for this transfer type.`);
+      return;
+    }
+
+    if (amount <= 0) {
+      alert('Please enter a valid amount greater than 0.');
+      return;
+    }
+
     console.log('Transfer data:', transferData);
     
-    // Aquí podrías guardar la transferencia en el historial
+    // Save transfer to history
     this.addTransactionToHistory(transferData);
     
-    alert('Transferencia procesada exitosamente');
+    alert('Transfer processed successfully!');
     this.closeModal();
     form.reset();
   }

@@ -13,6 +13,7 @@ import { LogInComponent } from './app/features/log-in/log-in.component';
 import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.component';
 import { RecoverPasswordComponent } from './app/features/recover-password/recover-password.component';
 import { RecoverPasswordConfirmComponent } from './app/features/recover-password-confirm/recover-password-confirm.component';
+import { PaymentServicesComponentComponent } from './app/features/payment-services-component/payment-services-component.component';
 
 export const routes: Routes = [
   //paginas independientes
@@ -45,6 +46,7 @@ export const routes: Routes = [
       { path: 'transfers', component: TransfersComponent },
       { path: 'limits', component: LimitsComponent },
       { path: 'pockets', component: PocketsComponent },
+      { path: 'payment-services-component', component: PaymentServicesComponentComponent },
     ]
   },
 

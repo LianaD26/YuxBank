@@ -168,6 +168,30 @@
   color: #000;
 }
 
+/* LIMIT INFO */
+.limit-info {
+  background: #e8f4f8;
+  border-left: 4px solid #4a90e2;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.limit-label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.limit-value {
+  font-size: 1.1rem;
+  color: #4a90e2;
+  font-weight: 700;
+}
+
 /* FORMULARIO DEL MODAL */
 .modal-body {
   display: flex;

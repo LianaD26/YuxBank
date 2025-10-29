@@ -8,10 +8,8 @@
         <button type="button" (click)="openPocketManager()">Create Pocket</button>
     </div>
 
-    <!-- Modal backdrop -->
     <div class="modal-backdrop" *ngIf="showPocketManager" (click)="closePocketManager()" aria-hidden="true"></div>
 
-    <!-- Modal dialog -->
     <div class="modal" *ngIf="showPocketManager" role="dialog" aria-modal="true" aria-labelledby="pocketManagerTitle">
         <div class="modal-content">
             <header class="modal-header">
@@ -19,10 +17,18 @@
                 <button type="button" class="modal-close" (click)="closePocketManager()" aria-label="Close">X</button>
             </header>
             <section class="modal-body">
-                <!-- Incluir el componente Pocket Manager dentro del modal -->
                 <app-pocket-manager (created)="onPocketCreated($event)"></app-pocket-manager>
             </section>
         </div>
     </div>
+    <section class="pockets-list">
+        <h3>Your pockets</h3>
+        <div *ngIf="pockets && pockets.length > 0; else empty">
+            <app-pocket-view *ngFor="let p of pockets" [pocket]="p"></app-pocket-view>
+        </div>
+        <ng-template #empty>
+            <p>No pockets yet. Create one to get started.</p>
+        </ng-template>
+    </section>
 
 </div>

@@ -1,0 +1,30 @@
+.pocket-view {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+.pocket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pocket-name {
+  margin: 0;
+  font-size: 1rem;
+}
+.pocket-value {
+  font-weight: 600;
+}
+.pocket-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+.pocket-desc {
+  margin-top: 8px;
+  color: #333;
+}

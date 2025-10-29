@@ -33,4 +33,27 @@ export class AccountService {
     const accounts = this.getAccounts().filter(a => a.number !== number);
     localStorage.setItem(this.storageKey, JSON.stringify(accounts));
   }
+
+  getAccountByNumber(number: string): Account | undefined {
+    const accounts = this.getAccounts();
+    return accounts.find(a => a.number === number);
+  }
+
+  updateAccountBalance(accountNumber: string, amount: number): boolean {
+    const accounts = this.getAccounts();
+    const account = accounts.find(a => a.number === accountNumber);
+    
+    if (!account) {
+      return false;
+    }
+
+    // Check if sufficient balance for debit (negative amount)
+    if (amount < 0 && account.balance + amount < 0) {
+      return false;
+    }
+
+    account.balance += amount;
+    localStorage.setItem(this.storageKey, JSON.stringify(accounts));
+    return true;
+  }
 }
