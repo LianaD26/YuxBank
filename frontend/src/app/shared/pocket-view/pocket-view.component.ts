@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface PocketViewModel {
@@ -19,5 +19,12 @@ export interface PocketViewModel {
 })
 export class PocketViewComponent {
   @Input() pocket!: PocketViewModel;
+  @Output() delete = new EventEmitter<PocketViewModel>();
+
+  onDelete(): void {
+    if (confirm(`Are you sure you want to delete "${this.pocket.name}"? The balance will be returned to your account.`)) {
+      this.delete.emit(this.pocket);
+    }
+  }
 }
 

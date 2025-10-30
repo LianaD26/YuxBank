@@ -24,7 +24,7 @@
     <section class="pockets-list">
         <h3>Your pockets</h3>
         <div *ngIf="pockets && pockets.length > 0; else empty">
-            <app-pocket-view *ngFor="let p of pockets" [pocket]="p"></app-pocket-view>
+            <app-pocket-view *ngFor="let p of pockets" [pocket]="p" (delete)="onPocketDeleted($event)"></app-pocket-view>
         </div>
         <ng-template #empty>
             <p>No pockets yet. Create one to get started.</p>

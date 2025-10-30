@@ -21,6 +21,11 @@ export class ViewAccountsComponent implements OnInit {
   loadAccounts() {
     this.accountService.getAccounts().subscribe({
       next: (accounts) => {
+        console.log('=== VIEW ACCOUNTS COMPONENT ===');
+        console.log('Accounts received:', accounts);
+        console.log('First account sample:', accounts[0]);
+        console.log('Saldo field exists?', accounts[0]?.saldo !== undefined);
+        console.log('Saldo value:', accounts[0]?.saldo);
         this.accounts.set(accounts);
       },
       error: (error) => {

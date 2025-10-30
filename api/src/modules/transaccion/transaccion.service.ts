@@ -18,6 +18,16 @@ export class TransaccionService {
         return this.transaccionRepository.find({ relations: ['cuenta_origen', 'cuenta_destino'] });
     }
 
+    async findByUser(userId: number): Promise<Transaccion[]> {
+        const qb = this.transaccionRepository.createQueryBuilder('t')
+            .leftJoinAndSelect('t.cuenta_origen', 'co')
+            .leftJoinAndSelect('t.cuenta_destino', 'cd')
+            .where('co.id_usuario = :userId OR cd.id_usuario = :userId', { userId })
+            .orderBy('t.fecha', 'DESC');
+
+        return await qb.getMany();
+    }
+
     async findOne(id: number): Promise<Transaccion> {
         const transaccion = await this.transaccionRepository.findOne({ where: { id_transaccion: id }, relations: ['cuenta_origen', 'cuenta_destino'] });
         if (!transaccion) {
@@ -118,36 +128,44 @@ export class TransaccionService {
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
-        const resolveCuentaId = async (id?: number, num?: string): Promise<number> => {
+        const resolveCuentaId = async (id?: number, num?: string, required: boolean = true): Promise<number | null> => {
             if (id) return id;
             if (!num) {
-                throw new NotFoundException('Debe indicar id de cuenta o número de cuenta');
+                if (required) {
+                    throw new NotFoundException('Debe indicar id de cuenta o número de cuenta');
+                }
+                return null;
             }
             const c = await queryRunner.manager
                 .getRepository('cuenta')
                 .createQueryBuilder('c')
                 .where('c.num_cuenta = :num', { num })
                 .getOne();
-            if (!c) throw new NotFoundException('Cuenta no encontrada por número');
-            return (c as any).id_cuenta as number;
+            if (!c && required) throw new NotFoundException('Cuenta no encontrada por número');
+            return c ? (c as any).id_cuenta as number : null;
         };
 
-        const origenId = await resolveCuentaId(dto.id_cuenta_origen, dto.num_cuenta_origen);
-        const destinoId = await resolveCuentaId(dto.id_cuenta_destino, dto.num_cuenta_destino);
+        const origenId = await resolveCuentaId(dto.id_cuenta_origen, dto.num_cuenta_origen, true);
+        // Para cuenta destino, no es requerido que exista (puede ser otro banco)
+        const destinoId = await resolveCuentaId(dto.id_cuenta_destino, dto.num_cuenta_destino, false);
 
-        if (origenId === destinoId) {
+        if (origenId && destinoId && origenId === destinoId) {
             throw new NotFoundException('La cuenta origen y destino no pueden ser la misma');
         }
 
         // Idempotencia: si existe transacción con misma referencia, monto y cuentas, devolverla
-        if (dto.referencia) {
+        if (dto.referencia && origenId !== null) {
+            const whereCondition: any = {
+                id_cuenta_origen: origenId,
+                monto: dto.monto as any,
+                referencia: dto.referencia,
+            };
+            if (destinoId !== null) {
+                whereCondition.id_cuenta_destino = destinoId;
+            }
+            
             const existing = await this.transaccionRepository.findOne({
-                where: {
-                    id_cuenta_origen: origenId,
-                    id_cuenta_destino: destinoId,
-                    monto: dto.monto as any,
-                    referencia: dto.referencia,
-                },
+                where: whereCondition,
             });
             if (existing) {
                 await queryRunner.release();
@@ -156,7 +174,7 @@ export class TransaccionService {
         }
 
         try {
-            // Bloquear filas de cuentas
+            // Bloquear fila de cuenta origen
             const cuentaOrigen = await queryRunner.manager
                 .getRepository('cuenta')
                 .createQueryBuilder('c')
@@ -164,15 +182,19 @@ export class TransaccionService {
                 .where('c.id_cuenta = :id', { id: origenId })
                 .getOne();
 
-            const cuentaDestino = await queryRunner.manager
-                .getRepository('cuenta')
-                .createQueryBuilder('c')
-                .setLock('pessimistic_write')
-                .where('c.id_cuenta = :id', { id: destinoId })
-                .getOne();
+            if (!cuentaOrigen) {
+                throw new NotFoundException('Cuenta origen no existe');
+            }
 
-            if (!cuentaOrigen || !cuentaDestino) {
-                throw new NotFoundException('Cuenta origen o destino no existe');
+            // Bloquear cuenta destino solo si existe (mismo banco)
+            let cuentaDestino: any = null;
+            if (destinoId !== null) {
+                cuentaDestino = await queryRunner.manager
+                    .getRepository('cuenta')
+                    .createQueryBuilder('c')
+                    .setLock('pessimistic_write')
+                    .where('c.id_cuenta = :id', { id: destinoId })
+                    .getOne();
             }
 
             // Autorización: el usuario solo puede debitar desde su propia cuenta
@@ -200,7 +222,7 @@ export class TransaccionService {
                 throw new NotFoundException('Saldo insuficiente');
             }
 
-            // Debitar/abonar
+            // Debitar de cuenta origen
             await queryRunner.manager
                 .createQueryBuilder()
                 .update('cuenta')
@@ -208,23 +230,32 @@ export class TransaccionService {
                 .where('id_cuenta = :id', { id: origenId })
                 .execute();
 
-            await queryRunner.manager
-                .createQueryBuilder()
-                .update('cuenta')
-                .set({ saldo: () => `saldo + ${Number(dto.monto)}` })
-                .where('id_cuenta = :id', { id: destinoId })
-                .execute();
+            // Abonar a cuenta destino solo si es del mismo banco
+            if (destinoId && cuentaDestino) {
+                await queryRunner.manager
+                    .createQueryBuilder()
+                    .update('cuenta')
+                    .set({ saldo: () => `saldo + ${Number(dto.monto)}` })
+                    .where('id_cuenta = :id', { id: destinoId })
+                    .execute();
+            }
 
             // Registrar transacción
-            const toSave = this.transaccionRepository.create({
+            const transactionData: any = {
                 id_cuenta_origen: origenId,
-                id_cuenta_destino: destinoId,
                 tipo: dto.tipo,
                 monto: dto.monto as any,
-                referencia: dto.referencia,
+                referencia: dto.referencia || `Transfer to ${dto.num_cuenta_destino}`,
                 descripcion: dto.descripcion,
                 fecha: dto.fecha ? (dto.fecha as any) : undefined,
-            } as any);
+            };
+
+            // Solo agregar id_cuenta_destino si existe (mismo banco)
+            if (destinoId) {
+                transactionData.id_cuenta_destino = destinoId;
+            }
+
+            const toSave = this.transaccionRepository.create(transactionData);
 
             const insertResult = await queryRunner.manager.getRepository(Transaccion).insert(toSave);
             const newId = insertResult.identifiers[0]?.id_transaccion as number;

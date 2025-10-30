@@ -14,22 +14,43 @@ import { PocketViewComponent, PocketViewModel } from '../../shared/pocket-view/p
   styleUrls: ['./pockets.component.css']
 })
 
-export class PocketsComponent {
+export class PocketsComponent implements OnInit {
   showPocketManager = false;
   pockets: PocketViewModel[] = [];
-  constructor(private router: Router, private storageService: StorageService, private pocketService: PocketService) {}
+  
+  constructor(
+    private router: Router, 
+    private storageService: StorageService, 
+    private pocketService: PocketService
+  ) {}
 
   ngOnInit(): void {
     this.loadPockets();
   }
 
   private loadPockets(): void {
-    const logged = this.storageService.getLoggedUser();
-    if (!logged) {
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
       this.pockets = [];
       return;
     }
-    this.pockets = this.pocketService.getPocketsForUser(logged.email);
+
+    this.pocketService.getPockets().subscribe({
+      next: (bolsillos) => {
+        this.pockets = bolsillos.map(b => ({
+          id: b.id_bolsillo.toString(),
+          name: b.nombre,
+          description: '',
+          value: Number(b.saldo),
+          createdAt: new Date().toISOString(),
+          fromAccount: null
+        }));
+      },
+      error: (err) => {
+        console.error('Error loading pockets:', err);
+        this.pockets = [];
+      }
+    });
   }
 
   openPocketManager() {
@@ -41,26 +62,60 @@ export class PocketsComponent {
   }
 
   onPocketCreated(pocket: any) {
-    // Cerrar modal y navegar a la lista de pockets
-    this.closePocketManager();
-    // Guardar pocket en localStorage usando StorageService
-    const logged = this.storageService.getLoggedUser();
-    if (logged) {
-      const newPocket = {
-        id: Date.now().toString(),
-        name: pocket.name,
-        description: pocket.description || '',
-        value: Number(pocket.value),
-        createdAt: new Date().toISOString(),
-        fromAccount: pocket.fromAccount || null
-      };
-      this.pocketService.addPocket(logged.email, newPocket);
-      // refresh local list so UI updates
-      this.loadPockets();
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
+      alert('You must be logged in to create a pocket');
+      return;
     }
 
-    // navegar a /pockets — si ya estás en la misma ruta esto forzará una navegación
-    this.router.navigate(['/pockets']);
+    // Crear el pocket a través de la API
+    this.pocketService.createPocket(
+      pocket.name,
+      Number(pocket.value),
+      pocket.fromAccount
+    ).subscribe({
+      next: () => {
+        this.closePocketManager();
+        this.loadPockets(); // Recargar la lista
+        this.router.navigate(['/pockets']);
+      },
+      error: (err) => {
+        console.error('Error creating pocket:', err);
+        if (err.error?.message) {
+          alert(err.error.message);
+        } else {
+          alert('Error creating pocket. Please try again.');
+        }
+      }
+    });
+  }
+
+  onPocketDeleted(pocket: PocketViewModel) {
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
+      alert('You must be logged in to delete a pocket');
+      return;
+    }
+
+    // Eliminar el pocket a través de la API
+    // El saldo se devolverá a la cuenta de origen si existe
+    this.pocketService.deletePocket(
+      Number(pocket.id),
+      pocket.fromAccount || ''
+    ).subscribe({
+      next: () => {
+        alert('Pocket deleted successfully. Balance returned to your account.');
+        this.loadPockets(); // Recargar la lista
+      },
+      error: (err) => {
+        console.error('Error deleting pocket:', err);
+        if (err.error?.message) {
+          alert(err.error.message);
+        } else {
+          alert('Error deleting pocket. Please try again.');
+        }
+      }
+    });
   }
 
 }

@@ -70,9 +70,16 @@ export class AccountService {
    * Gets all accounts from the API
    */
   getAccounts(): Observable<AccountResponse[]> {
+    console.log('=== GETTING ACCOUNTS ===');
+    console.log('API URL:', this.apiUrl);
+    console.log('Token:', localStorage.getItem('yuxbank_token'));
+    
     return this.http.get<AccountResponse[]>(this.apiUrl, { headers: this.getHeaders() })
       .pipe(
-        catchError(this.handleError)
+        catchError((error) => {
+          console.error('Error getting accounts:', error);
+          return this.handleError(error);
+        })
       );
   }
 

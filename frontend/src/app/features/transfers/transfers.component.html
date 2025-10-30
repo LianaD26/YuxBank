@@ -28,8 +28,8 @@
         <div class="container-transaction-section">
           <section class="transaction-section">
             <div class="transfer-options">
-              <button (click)="openModal('same')" class="opt">Same Bank Transfer</button>
-              <button (click)="openModal('other')" class="opt">Other Bank Transfer</button>
+              <button (click)="openModal('own')" class="opt">Own Accounts Transfer</button>
+              <button (click)="openModal('other')" class="opt">Transfer to Other People</button>
               <button (click)="openModal('schedule')" class="opt">Schedule Transfer</button>
             </div>
 
@@ -37,15 +37,16 @@
             <div class="modal-backdrop" *ngIf="showModal">
               <div class="modal" role="dialog" aria-modal="true">
                 <header class="modal-header">
-                  <h3 *ngIf="modalType==='same'">Transfer - Same Bank</h3>
-                  <h3 *ngIf="modalType==='other'">Transfer - Other Bank</h3>
+                  <h3 *ngIf="modalType==='own'">Transfer - Own Accounts</h3>
+                  <h3 *ngIf="modalType==='other'">Transfer - Other People</h3>
                   <h3 *ngIf="modalType==='schedule'">Schedule Transfer</h3>
                   <button class="close" (click)="closeModal()" aria-label="Close">×</button>
                 </header>
 
-                <div class="limit-info" *ngIf="currentLimit > 0">
+                <div class="limit-info">
                   <span class="limit-label">Transfer Limit:</span>
-                  <span class="limit-value">{{ currentLimit | currency }}</span>
+                  <span class="limit-value" *ngIf="currentLimit > 0">{{ currentLimit | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="limit-value no-limit" *ngIf="currentLimit === 0">No limit set</span>
                 </div>
 
                 <form (submit)="onSubmit($event)" class="modal-body">
@@ -58,19 +59,25 @@
                     </select>
                   </label>
 
-                  <label *ngIf="modalType==='same' || modalType==='schedule'">
-                    To Account (same bank)
-                    <input name="toAccountSame" placeholder="Destination account" />
+                  <!-- For Own Accounts: show selector of user's own accounts -->
+                  <label *ngIf="modalType==='own'">
+                    To Account (your accounts)
+                    <select name="toAccountOwn">
+                      <option value="">-- Select destination account --</option>
+                      <option *ngFor="let a of accounts" [value]="a.num_cuenta">{{ a.tipo }} - {{ a.num_cuenta }}</option>
+                    </select>
                   </label>
 
+                  <!-- For Other People: regular transfer -->
                   <label *ngIf="modalType==='other'">
-                    Destination Bank
-                    <input name="bankName" placeholder="Bank name" />
+                    To Account (other person)
+                    <input name="toAccountOther" placeholder="Enter destination account number" />
                   </label>
 
-                  <label *ngIf="modalType==='other'">
-                    To Account (other bank)
-                    <input name="toAccountOther" placeholder="Destination account (other bank)" />
+                  <!-- For Schedule: show regular input -->
+                  <label *ngIf="modalType==='schedule'">
+                    To Account
+                    <input name="toAccountOther" placeholder="Destination account" />
                   </label>
 
                   <label>

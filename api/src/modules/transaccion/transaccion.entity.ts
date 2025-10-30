@@ -9,7 +9,7 @@ export class Transaccion {
   @Column()
   id_cuenta_origen: number;
 
-  @Column()
+  @Column({ nullable: true })
   id_cuenta_destino: number;
 
   @Column({ length: 20 })

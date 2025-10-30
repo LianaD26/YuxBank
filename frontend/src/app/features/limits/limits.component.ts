@@ -24,19 +24,34 @@ export class LimitsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const logged = this.storageService.getLoggedUser();
-    if (logged) {
-      this.limits = this.limitsService.getLimitsForUser(logged.email);
+    const token = localStorage.getItem('yuxbank_token');
+    if (token) {
+      this.limitsService.getLimits().subscribe({
+        next: (limits) => {
+          this.limits = limits;
+        },
+        error: (err) => {
+          console.error('Error loading limits:', err);
+        }
+      });
     }
   }
 
   saveLimits(): void {
-    const logged = this.storageService.getLoggedUser();
-    if (!logged) {
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
       alert('You must be logged in to save limits');
       return;
     }
-    this.limitsService.saveLimitsForUser(logged.email, this.limits);
-    alert('Limits saved successfully');
+    
+    this.limitsService.saveLimits(this.limits).subscribe({
+      next: () => {
+        alert('Limits saved successfully');
+      },
+      error: (err) => {
+        console.error('Error saving limits:', err);
+        alert('Error saving limits. Please try again.');
+      }
+    });
   }
 }

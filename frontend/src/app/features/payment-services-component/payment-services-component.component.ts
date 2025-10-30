@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { StorageService } from '../../services/storage.service';
 import { AccountService, AccountResponse } from '../../services/account.service';
-import { TransactionService } from '../../services/transaction.service';
+import { TransactionService, TransactionRequest } from '../../services/transaction.service';
 import { Transaction } from '../transfers/transaction.model';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
 
@@ -17,7 +18,7 @@ interface PaymentService {
 @Component({
   selector: 'app-payment-services-component',
   standalone: true,
-  imports: [CommonModule, FormsModule, SerchBarComponent],
+  imports: [CommonModule, FormsModule, SerchBarComponent, HttpClientModule],
   templateUrl: './payment-services-component.component.html',
   styleUrl: './payment-services-component.component.css'
 })
@@ -160,49 +161,55 @@ export class PaymentServicesComponentComponent implements OnInit {
       return;
     }
 
-    // Check sufficient balance
-    if (account.saldo < this.amount) {
-      alert(`Insufficient balance. Available: $${account.saldo.toFixed(2)}, Required: $${this.amount.toFixed(2)}`);
+    // Check sufficient balance (convert saldo to number if it's string)
+    const saldo = typeof account.saldo === 'string' ? parseFloat(account.saldo) : account.saldo;
+    if (saldo < this.amount) {
+      alert(`Insufficient balance. Available: $${saldo.toFixed(2)}, Required: $${this.amount.toFixed(2)}`);
       return;
     }
 
-    // Note: Balance update should be handled by the API when creating the transaction
-    // For now, we'll proceed with creating the transaction record
-
     // Create transaction description
     let description = '';
+    let destinationAccount = '';
+    
     if (this.selectedService.id === 'utilities') {
       description = `${this.utilityType.charAt(0).toUpperCase() + this.utilityType.slice(1)} payment - Account: ${this.accountNumber}`;
+      destinationAccount = this.accountNumber;
     } else if (this.selectedService.id === 'civica') {
       description = `Civica card recharge - Card: ${this.civicaCardNumber}`;
+      destinationAccount = this.civicaCardNumber;
     } else if (this.selectedService.id === 'mobile') {
       description = `Mobile recharge - ${this.phoneNumber} (${this.mobileCarrier})`;
+      destinationAccount = this.phoneNumber;
     }
 
     if (this.reference) {
-      description += ` - ${this.reference}`;
+      description += ` - Ref: ${this.reference}`;
     }
 
-    // Create transaction record
-    const transaction: Transaction = {
-      id: `PAY${Date.now()}`,
-      date: new Date(),
-      amount: -this.amount,
-      currency: 'USD',
-      type: 'payment',
-      status: 'completed',
-      merchant: { name: this.selectedService.name },
-      description: description
+    // Create payment request
+    const paymentRequest: TransactionRequest = {
+      num_cuenta_origen: this.fromAccount,
+      num_cuenta_destino: destinationAccount,
+      tipo: 'pago',
+      monto: this.amount,
+      referencia: this.reference || undefined,
+      descripcion: description
     };
 
-    this.transactionService.addTransaction(transaction);
-
-    console.log('Payment processed:', transaction);
-    
-    alert(`Payment of $${this.amount.toFixed(2)} for ${this.selectedService.name} processed successfully!\nNew balance: $${(account.saldo - this.amount).toFixed(2)}`);
-    this.closeModal();
-    
-    // Reload accounts to get updated balances
-    this.loadAccounts();
+    // Call API to process payment
+    this.transactionService.createTransfer(paymentRequest).subscribe({
+      next: (response) => {
+        const serviceName = this.selectedService?.name || 'service';
+        alert(`Payment of $${this.amount.toFixed(2)} for ${serviceName} processed successfully!`);
+        this.closeModal();
+        
+        // Reload accounts to get updated balances
+        this.loadAccounts();
+      },
+      error: (error) => {
+        alert(error.message || 'Error processing payment. Please try again.');
+      }
+    });
   }
 }

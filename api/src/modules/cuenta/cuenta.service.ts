@@ -20,6 +20,20 @@ export class CuentaService {
     return this.cuentaRepository.find({ relations: ['usuario'] });
   }
 
+  async findByUser(userId: number): Promise<Cuenta[]> {
+    console.log('=== FIND BY USER SERVICE ===');
+    console.log('User ID:', userId);
+    
+    const cuentas = await this.cuentaRepository.find({ 
+      where: { id_usuario: userId },
+      select: ['id_cuenta', 'num_cuenta', 'tipo', 'saldo', 'estado', 'id_usuario'],
+      order: { id_cuenta: 'ASC' }
+    });
+    
+    console.log('Cuentas found in DB:', cuentas);
+    return cuentas;
+  }
+
   async findOne(id: number): Promise<Cuenta> {
     const cuenta = await this.cuentaRepository.findOne({ where: { id_cuenta: id }, relations: ['usuario'] });
     if (!cuenta) {

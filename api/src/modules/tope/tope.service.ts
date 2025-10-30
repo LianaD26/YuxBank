@@ -16,6 +16,13 @@ export class TopeService {
     return this.topeRepository.find();
   }
 
+  async findByUser(userId: number): Promise<Tope[]> {
+    return this.topeRepository.find({ 
+      where: { id_usuario: userId },
+      order: { tipo: 'ASC' }
+    });
+  }
+
   async findOne(id: number): Promise<Tope> {
     const tope = await this.topeRepository.findOne({ where: { id_tope: id } });
     if (!tope) {

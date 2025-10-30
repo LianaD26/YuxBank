@@ -14,10 +14,16 @@ export class CuentaController {
   constructor(private readonly cuentaService: CuentaService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar cuentas' })
+  @ApiOperation({ summary: 'Listar cuentas del usuario autenticado' })
   @ApiOkResponse({ type: [Cuenta] })
-  findAll(): Promise<Cuenta[]> {
-    return this.cuentaService.findAll();
+  async findAll(@Req() req): Promise<Cuenta[]> {
+    console.log('=== GET ACCOUNTS ENDPOINT ===');
+    console.log('User from JWT:', req.user);
+    const userId = req.user.id_usuario;
+    const cuentas = await this.cuentaService.findByUser(userId);
+    console.log('Cuentas found:', cuentas.length);
+    console.log('Sample cuenta:', cuentas[0]);
+    return cuentas;
   }
 
   @Get(':id')

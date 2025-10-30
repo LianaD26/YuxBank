@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
 import { AccountService, AccountResponse } from '../../services/account.service';
+import { TransactionService, TransactionRequest } from '../../services/transaction.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, switchMap, startWith, tap } from 'rxjs/operators';
 import { Transaction } from './transaction.model';
@@ -11,7 +13,7 @@ import { StorageService } from '../../services/storage.service';
 @Component({
   selector: 'app-transfers',
   standalone: true,
-  imports: [CommonModule, SerchBarComponent],
+  imports: [CommonModule, SerchBarComponent, HttpClientModule],
   templateUrl: './transfers.component.html',
   styleUrls: ['./transfers.component.css']
 })
@@ -26,7 +28,7 @@ export class TransfersComponent implements OnInit {
 
   // VARIABLES PARA TRANSFERENCIAS
   showModal = false;
-  modalType: 'same' | 'other' | 'schedule' | null = null;
+  modalType: 'own' | 'other' | 'schedule' | null = null;
   currentLimit: number = 0;
   userLimits: UserLimits | null = null;
 
@@ -44,15 +46,16 @@ export class TransfersComponent implements OnInit {
   constructor(
     private limitsService: LimitsService,
     private storageService: StorageService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private transactionService: TransactionService
   ) {}
 
   ngOnInit() {
     // Load user limits
     this.loadUserLimits();
 
-    // Inicializar datos de ejemplo para transacciones
-    this.loadMockTransactions();
+    // Load transactions from API
+    this.loadTransactionsFromAPI();
 
     // Load accounts from AccountService
     this.loadAccounts();
@@ -80,10 +83,19 @@ export class TransfersComponent implements OnInit {
   }
 
   private loadUserLimits() {
-    const logged = this.storageService.getLoggedUser();
-    if (logged) {
-      this.userLimits = this.limitsService.getLimitsForUser(logged.email);
-    }
+    this.limitsService.getLimits().subscribe({
+      next: (limits) => {
+        this.userLimits = limits;
+      },
+      error: (error) => {
+        console.error('Error loading limits:', error);
+        this.userLimits = {
+          sameBankTransferLimit: 0,
+          otherBankTransferLimit: 0,
+          scheduledTransferLimit: 0
+        };
+      }
+    });
   }
 
   // MÉTODOS PARA NAVEGACIÓN
@@ -94,24 +106,33 @@ export class TransfersComponent implements OnInit {
   }
 
   // MÉTODOS PARA TRANSFERENCIAS
-  openModal(type: 'same' | 'other' | 'schedule') {
+  openModal(type: 'own' | 'other' | 'schedule') {
     this.modalType = type;
     this.showModal = true;
     
-    // Set current limit based on transfer type
-    if (this.userLimits) {
-      switch(type) {
-        case 'same':
-          this.currentLimit = this.userLimits.sameBankTransferLimit;
-          break;
-        case 'other':
-          this.currentLimit = this.userLimits.otherBankTransferLimit;
-          break;
-        case 'schedule':
-          this.currentLimit = this.userLimits.scheduledTransferLimit;
-          break;
+    // Reload limits from API when opening modal
+    this.limitsService.getLimits().subscribe({
+      next: (limits) => {
+        this.userLimits = limits;
+        
+        // Set current limit based on transfer type
+        switch(type) {
+          case 'own':
+            this.currentLimit = limits.sameBankTransferLimit;
+            break;
+          case 'other':
+            this.currentLimit = limits.otherBankTransferLimit;
+            break;
+          case 'schedule':
+            this.currentLimit = limits.scheduledTransferLimit;
+            break;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading limits:', error);
+        this.currentLimit = 0;
       }
-    }
+    });
 
     // Reload accounts when opening modal to reflect changes
     this.loadAccounts();
@@ -135,18 +156,12 @@ export class TransfersComponent implements OnInit {
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
     
-    const transferData = {
-      fromAccount: formData.get('fromAccount'),
-      toAccount: formData.get('toAccountSame') || formData.get('toAccountOther'),
-      bankName: formData.get('bankName'),
-      amount: formData.get('amount'),
-      date: formData.get('date'),
-      description: formData.get('description')
-    };
+    const fromAccount = formData.get('fromAccount') as string;
+    const toAccount = (formData.get('toAccountOwn') || formData.get('toAccountOther')) as string;
+    const amount = parseFloat(formData.get('amount') as string) || 0;
+    const description = formData.get('description') as string;
 
     // Validate amount against limit
-    const amount = parseFloat(transferData.amount as string) || 0;
-    
     if (this.currentLimit > 0 && amount > this.currentLimit) {
       alert(`Transfer amount ($${amount.toFixed(2)}) exceeds the limit of $${this.currentLimit.toFixed(2)} for this transfer type.`);
       return;
@@ -157,14 +172,39 @@ export class TransfersComponent implements OnInit {
       return;
     }
 
-    console.log('Transfer data:', transferData);
-    
-    // Save transfer to history
-    this.addTransactionToHistory(transferData);
-    
-    alert('Transfer processed successfully!');
-    this.closeModal();
-    form.reset();
+    if (!fromAccount || !toAccount) {
+      alert('Please select both source and destination accounts.');
+      return;
+    }
+
+    // Create transaction request
+    const transactionRequest: TransactionRequest = {
+      num_cuenta_origen: fromAccount,
+      num_cuenta_destino: toAccount,
+      tipo: 'transferencia',
+      monto: amount,
+      descripcion: description || `Transfer to ${toAccount}`
+    };
+
+    this.isLoading = true;
+
+    // Call API to create transfer
+    this.transactionService.createTransfer(transactionRequest).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        alert('Transfer processed successfully!');
+        this.closeModal();
+        form.reset();
+        
+        // Reload transactions and accounts
+        this.loadTransactionsFromAPI();
+        this.loadAccounts();
+      },
+      error: (error) => {
+        this.isLoading = false;
+        alert(error.message || 'Error processing transfer. Please try again.');
+      }
+    });
   }
 
   // MÉTODOS PARA HISTORIAL
@@ -176,74 +216,16 @@ export class TransfersComponent implements OnInit {
     this.selectedTx = null;
   }
 
-  private addTransactionToHistory(transferData: any) {
-    const currentTransactions = this.transactionsSubject.value;
-    
-    const newTransaction: Transaction = {
-      id: `TXN${String(currentTransactions.length + 1).padStart(3, '0')}`,
-      date: new Date(),
-      amount: -(parseFloat(transferData.amount as string) || 0),
-      currency: 'USD',
-      type: 'transfer',
-      status: transferData.date ? 'scheduled' : 'completed',
-      description: transferData.description as string || `Transfer to ${transferData.toAccount}`
-    };
-
-    // Agregar al inicio del array
-    this.transactionsSubject.next([newTransaction, ...currentTransactions]);
-  }
-
-  private loadMockTransactions() {
-    // Datos de ejemplo - reemplazar con servicio real
-    const mockTransactions: Transaction[] = [
-      {
-        id: 'TXN001',
-        date: new Date('2025-10-25T10:30:00'),
-        amount: -150.50,
-        currency: 'USD',
-        type: 'transfer',
-        status: 'completed',
-        description: 'Transfer to savings account'
+  private loadTransactionsFromAPI() {
+    this.transactionService.getTransactions().subscribe({
+      next: (transactions) => {
+        this.transactionsSubject.next(transactions);
       },
-      {
-        id: 'TXN002',
-        date: new Date('2025-10-24T15:45:00'),
-        amount: 500.00,
-        currency: 'USD',
-        type: 'deposit',
-        status: 'completed',
-        merchant: { name: 'Salary Payment' }
-      },
-      {
-        id: 'TXN003',
-        date: new Date('2025-10-23T09:15:00'),
-        amount: -75.25,
-        currency: 'USD',
-        type: 'payment',
-        status: 'completed',
-        merchant: { name: 'Amazon' }
-      },
-      {
-        id: 'TXN004',
-        date: new Date('2025-10-22T18:20:00'),
-        amount: -30.00,
-        currency: 'USD',
-        type: 'transfer',
-        status: 'pending',
-        description: 'Transfer to John Doe'
-      },
-      {
-        id: 'TXN005',
-        date: new Date('2025-10-20T12:00:00'),
-        amount: 1200.00,
-        currency: 'USD',
-        type: 'deposit',
-        status: 'completed',
-        merchant: { name: 'Freelance Payment' }
+      error: (error) => {
+        console.error('Error loading transactions:', error);
+        this.transactionsSubject.next([]);
       }
-    ];
-
-    this.transactionsSubject.next(mockTransactions);
+    });
   }
 
   private filterTransactions(query: string): Observable<Transaction[]> {

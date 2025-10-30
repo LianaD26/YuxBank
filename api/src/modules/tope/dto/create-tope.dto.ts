@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum TopeTipo {
@@ -8,10 +8,11 @@ export enum TopeTipo {
 }
 
 export class CreateTopeDto {
-  @ApiProperty({ description: 'ID del usuario', example: 1 })
+  @ApiProperty({ description: 'ID del usuario (se obtiene automáticamente del JWT)', example: 1, required: false })
   @Type(() => Number)
   @IsNumber()
-  id_usuario: number;
+  @IsOptional()
+  id_usuario?: number;
 
   @ApiProperty({ description: 'Tipo de tope', enum: TopeTipo, example: TopeTipo.CONSUMO })
   @IsEnum(TopeTipo)

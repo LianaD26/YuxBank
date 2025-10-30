@@ -15,10 +15,11 @@ export class TransaccionController {
   constructor(private readonly transaccionService: TransaccionService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar transacciones' })
+  @ApiOperation({ summary: 'Listar transacciones del usuario autenticado' })
   @ApiOkResponse({ type: [Transaccion] })
-  findAll(): Promise<Transaccion[]> {
-    return this.transaccionService.findAll();
+  async findAll(@Request() req): Promise<Transaccion[]> {
+    const userId = req.user.id_usuario;
+    return this.transaccionService.findByUser(userId);
   }
 
   @Get(':id')

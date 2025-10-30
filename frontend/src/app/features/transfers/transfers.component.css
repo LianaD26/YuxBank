@@ -201,6 +201,12 @@
   font-weight: 700;
 }
 
+.limit-value.no-limit {
+  color: #95a5a6;
+  font-weight: 500;
+  font-style: italic;
+}
+
 /* FORMULARIO DEL MODAL */
 .modal-body {
   display: flex;

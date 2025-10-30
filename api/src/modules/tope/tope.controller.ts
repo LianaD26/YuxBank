@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { TopeService } from './tope.service';
 import { Tope } from './tope.entity';
 import { CreateTopeDto } from './dto/create-tope.dto';
@@ -14,10 +14,11 @@ export class TopeController {
   constructor(private readonly topeService: TopeService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar topes' })
+  @ApiOperation({ summary: 'Listar topes del usuario autenticado' })
   @ApiOkResponse({ type: [Tope] })
-  findAll(): Promise<Tope[]> {
-    return this.topeService.findAll();
+  findAll(@Req() req: any): Promise<Tope[]> {
+    const userId = req.user.id_usuario;
+    return this.topeService.findByUser(userId);
   }
 
   @Get(':id')
@@ -32,8 +33,9 @@ export class TopeController {
   @ApiOperation({ summary: 'Crear tope' })
   @ApiBody({ type: CreateTopeDto })
   @ApiCreatedResponse({ type: Tope })
-  create(@Body() dto: CreateTopeDto): Promise<Tope> {
-    return this.topeService.create(dto as any);
+  create(@Body() dto: CreateTopeDto, @Req() req: any): Promise<Tope> {
+    const userId = req.user.id_usuario;
+    return this.topeService.create({ ...dto, id_usuario: userId } as any);
   }
 
   @Put(':id')

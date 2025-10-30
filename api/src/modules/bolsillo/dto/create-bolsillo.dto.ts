@@ -3,10 +3,11 @@ import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateBolsilloDto {
-  @ApiProperty({ description: 'ID del usuario', example: 1 })
+  @ApiPropertyOptional({ description: 'ID del usuario (se obtiene automáticamente del JWT)', example: 1 })
   @Type(() => Number)
   @IsNumber()
-  id_usuario: number;
+  @IsOptional()
+  id_usuario?: number;
 
   @ApiPropertyOptional({ description: 'Nombre del bolsillo', example: 'Ahorro viaje' })
   @IsOptional()
@@ -14,7 +15,7 @@ export class CreateBolsilloDto {
   @Length(0, 50)
   nombre?: string;
 
-  @ApiPropertyOptional({ description: 'Saldo', example: 0 })
+  @ApiPropertyOptional({ description: 'Saldo inicial', example: 1000 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()

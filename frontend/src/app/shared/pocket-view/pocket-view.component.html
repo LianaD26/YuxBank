@@ -8,4 +8,7 @@
     <small class="created">{{ pocket.createdAt | date:'short' }}</small>
   </div>
   <p class="pocket-desc" *ngIf="pocket.description">{{ pocket.description }}</p>
+  <div class="pocket-actions">
+    <button type="button" class="btn-delete" (click)="onDelete()">Delete Pocket</button>
+  </div>
 </div>
