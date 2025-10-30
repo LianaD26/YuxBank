@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
+import { AccountService, Account } from '../../services/account.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, switchMap, startWith, tap } from 'rxjs/operators';
 import { Transaction } from './transaction.model';
@@ -34,12 +35,16 @@ export class TransfersComponent implements OnInit {
   transactions$!: Observable<Transaction[]>;
   isLoading = false;
   selectedTx: Transaction | null = null;
+  // CUENTAS ORIGEN
+  accounts: Account[] = [];
+  selectedFromAccount: Account | null = null;
   
   private transactionsSubject = new BehaviorSubject<Transaction[]>([]);
 
   constructor(
     private limitsService: LimitsService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit() {
@@ -48,6 +53,9 @@ export class TransfersComponent implements OnInit {
 
     // Inicializar datos de ejemplo para transacciones
     this.loadMockTransactions();
+
+    // Cargar cuentas desde AccountService
+    this.accounts = this.accountService.getAccounts();
 
     // Configurar búsqueda con debounce
     this.transactions$ = this.search$.pipe(
@@ -92,6 +100,17 @@ export class TransfersComponent implements OnInit {
           break;
       }
     }
+
+    // Reload accounts when opening modal to reflect changes
+    this.accounts = this.accountService.getAccounts();
+  }
+
+  onSelectFrom(id: string) {
+    if (!id) {
+      this.selectedFromAccount = null;
+      return;
+    }
+    this.selectedFromAccount = this.accounts.find(a => a.number === id) || null;
   }
 
   closeModal() {

@@ -230,6 +230,83 @@
   box-shadow: 0 0 0 2px rgba(138, 166, 50, 0.15);
 }
 
+/* FROM ACCOUNT pocket list */
+.from-account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.from-account-list .pocket-item {
+  cursor: pointer;
+}
+.from-account-list .pocket-item app-pocket-view {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.from-account-list .pocket-item[aria-pressed="true"] app-pocket-view,
+.from-account-list .pocket-item .selected {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-radius: 8px;
+}
+.empty-note {
+  color: #777;
+  font-size: 0.95rem;
+}
+
+/* Stylish select for From Account */
+.modal-body label select {
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0.85rem 3rem 0.85rem 0.9rem; /* space for custom arrow */
+  border-radius: 10px;
+  border: 1px solid #dde6cf;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfff8 100%);
+  font-size: 1rem;
+  color: #21322a;
+  box-shadow: 0 3px 8px rgba(34,50,30,0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.06s ease;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238aa632' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 14px 14px;
+}
+
+.modal-body label select:hover {
+  transform: translateY(-1px);
+}
+
+.modal-body label select:focus {
+  outline: none;
+  border-color: #8aa632;
+  box-shadow: 0 6px 20px rgba(138,166,50,0.12);
+}
+
+/* Disabled / empty state */
+.modal-body label select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-body label .select-help {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: #6b6f63;
+}
+
+/* Small screens tweak */
+@media (max-width: 480px) {
+  .modal {
+    width: calc(100% - 32px);
+    padding: 20px;
+  }
+  .modal-body label select {
+    padding-right: 2.6rem;
+  }
+}
+
 .modal-footer {
   display: flex;
   justify-content: space-between;
