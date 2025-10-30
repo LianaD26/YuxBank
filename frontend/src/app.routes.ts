@@ -14,6 +14,7 @@ import { LayoutHomeComponent } from './app/shared/layout-home/layout-home.compon
 import { RecoverPasswordComponent } from './app/features/recover-password/recover-password.component';
 import { RecoverPasswordConfirmComponent } from './app/features/recover-password-confirm/recover-password-confirm.component';
 import { PaymentServicesComponentComponent } from './app/features/payment-services-component/payment-services-component.component';
+import { authGuard } from './app/features/guards/auth-guard';
 
 export const routes: Routes = [
   //paginas independientes
@@ -38,15 +39,15 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       //{ path: '', redirectTo: 'login', pathMatch: 'full' }, //{ path: 'home', component: HomeComponent },
-      { path: 'products', component: ProductsComponent, children: [
-        { path: 'register', component: RegisterAccountComponent },
-        { path: 'view', component: ViewAccountsComponent },
+      { path: 'products', component: ProductsComponent, canActivate: [authGuard], children: [
+        { path: 'register', component: RegisterAccountComponent, canActivate: [authGuard] },
+        { path: 'view', component: ViewAccountsComponent, canActivate: [authGuard]},
       ]},
-      { path: 'settings', component: SettingsComponent },
-      { path: 'transfers', component: TransfersComponent },
-      { path: 'limits', component: LimitsComponent },
-      { path: 'pockets', component: PocketsComponent },
-      { path: 'payment-services-component', component: PaymentServicesComponentComponent },
+      { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
+      { path: 'transfers', component: TransfersComponent, canActivate: [authGuard] },
+      { path: 'limits', component: LimitsComponent, canActivate: [authGuard] },
+      { path: 'pockets', component: PocketsComponent, canActivate: [authGuard] },
+      { path: 'payment-services-component', component: PaymentServicesComponentComponent, canActivate: [authGuard] },
     ]
   },
 

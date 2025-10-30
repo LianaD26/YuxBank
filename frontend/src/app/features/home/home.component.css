@@ -59,7 +59,7 @@
   /*background: linear-gradient(135deg, #dce53f, #8aa632);*/
   padding: 4rem 2rem;
   text-align: center;
-  color: #2c3e50;
+  color: #666;
   border-radius: 15px;
   font-family: 'Poppins', sans-serif;
 }
@@ -84,7 +84,7 @@
 /* Services Section */
 .services {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #038b71, #79c8c6);
+  background: linear-gradient(135deg, #cce189, #8aa632);
   padding: 4rem 2rem;
   text-align: center;
   color: white;
@@ -94,7 +94,7 @@
 .services h2 {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  color: #dce53f;
+  color: #ffffff;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -154,16 +154,14 @@
 /* FAQ Section */
 .faq {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #79c8c6, #038b71);
   padding: 4rem 2rem;
-  color: #2c3e50;
   border-radius: 15px;
 }
 
 .faq h2 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: #5b7900;
+  color: #8aa632;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -178,14 +176,14 @@
 }
 
 .faq li {
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #cce189, #8aa632);
   margin-bottom: 1.5rem;
   padding: 1.5rem;
   border-radius: 12px;
   font-size: 1.2rem;
   font-weight: 600;
   color: #5b7900;
-  border-left: 4px solid #8aa632;
+  border-left: 4px solid #568c5b;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -200,9 +198,9 @@
   padding: 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #2c3e50;
+  color: #666;
   line-height: 1.6;
-  border-left: 2px solid #ffffff;
+  border-left: 2px solid #5bbf65;
 }
 
 
