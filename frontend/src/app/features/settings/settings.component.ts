@@ -59,24 +59,34 @@ export class SettingsComponent {
       return;
     }
 
-    if (this.registerUserService.emailExists(newEmail)) {
-      alert('The new email is already in use. Please choose another one.');
-      return;
-    }
+    // Verificar si el email ya existe usando la API
+    this.registerUserService.emailExists(newEmail).subscribe({
+      next: (exists) => {
+        if (exists) {
+          alert('The new email is already in use. Please choose another one.');
+          return;
+        }
 
-    const oldEmail = loggedUser.email;
-    loggedUser.email = newEmail;
+        // El email está disponible, proceder con la actualización
+        const oldEmail = loggedUser.email;
+        loggedUser.email = newEmail;
 
-    const updateSuccess = this.storageService.updateUserInStorage(oldEmail, loggedUser);
+        const updateSuccess = this.storageService.updateUserInStorage(oldEmail, loggedUser);
 
-    if (updateSuccess) {
-      this.storageService.saveLoggedUser(loggedUser);
-      alert('Email updated successfully.');
-      this.newEmail.set('');
-      this.currentPasswordEmail.set('');
-    } else {
-      alert('Error updating email. Please try again.');
-    }
+        if (updateSuccess) {
+          this.storageService.saveLoggedUser(loggedUser);
+          alert('Email updated successfully.');
+          this.newEmail.set('');
+          this.currentPasswordEmail.set('');
+        } else {
+          alert('Error updating email. Please try again.');
+        }
+      },
+      error: (error) => {
+        console.error('Error checking email:', error);
+        alert('Error checking email availability. Please try again.');
+      }
+    });
   }
 
   // ACTUALIZAR CONTRASEÑA
