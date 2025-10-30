@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -58,8 +58,15 @@ export class RegisterUserService {
    * @returns Observable con boolean (true si existe, false si no existe)
    */
   public emailExists(email: string): Observable<boolean> {
+    // Get token from localStorage (required for protected endpoint)
+    const token = localStorage.getItem('yuxbank_token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     return new Observable<boolean>(observer => {
-      this.http.get<any>(`${environment.apiUrl}/usuarios/${email}`).subscribe({
+      this.http.get<any>(`${environment.apiUrl}/usuarios/${email}`, { headers }).subscribe({
         next: (usuario) => {
           // Si encuentra el usuario, significa que el email existe
           observer.next(true);

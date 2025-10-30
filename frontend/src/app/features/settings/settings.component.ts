@@ -1,7 +1,9 @@
 import { Component, signal, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { RegisterUserService, User } from '../../services/register-user.service';
 import { StorageService } from '../../services/storage.service';
+import { UserSettingsService } from '../../services/user-settings.service';
 import { FormsModule } from '@angular/forms';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,7 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, SerchBarComponent],
+  imports: [CommonModule, FormsModule, SerchBarComponent, HttpClientModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -31,9 +33,12 @@ export class SettingsComponent {
   newPassword = signal('');
   confirmNewPassword = signal('');
 
+  isLoading = signal(false);
+
   constructor(
     private registerUserService: RegisterUserService,
     private storageService: StorageService,
+    private userSettingsService: UserSettingsService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
@@ -52,38 +57,54 @@ export class SettingsComponent {
 
   // ACTUALIZAR EMAIL
   changeEmail(newEmail: string, currentPassword: string): void {
-    const loggedUser = this.storageService.getLoggedUser();
-
-    if (!loggedUser || loggedUser.password !== currentPassword) {
-      alert('Current password is incorrect.');
+    if (!newEmail || !currentPassword) {
+      alert('Please fill out all fields.');
       return;
     }
 
-    // Verificar si el email ya existe usando la API
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    // Verificar si el email ya existe
     this.registerUserService.emailExists(newEmail).subscribe({
       next: (exists) => {
         if (exists) {
+          this.isLoading.set(false);
           alert('The new email is already in use. Please choose another one.');
           return;
         }
 
-        // El email está disponible, proceder con la actualización
-        const oldEmail = loggedUser.email;
-        loggedUser.email = newEmail;
-
-        const updateSuccess = this.storageService.updateUserInStorage(oldEmail, loggedUser);
-
-        if (updateSuccess) {
-          this.storageService.saveLoggedUser(loggedUser);
-          alert('Email updated successfully.');
-          this.newEmail.set('');
-          this.currentPasswordEmail.set('');
-        } else {
-          alert('Error updating email. Please try again.');
-        }
+        // El email está disponible, proceder con la actualización en la API
+        this.userSettingsService.changeEmail(newEmail).subscribe({
+          next: (response) => {
+            this.isLoading.set(false);
+            alert('Email updated successfully.');
+            
+            // Update local storage
+            const loggedUser = this.storageService.getLoggedUser();
+            if (loggedUser) {
+              loggedUser.email = newEmail;
+              this.storageService.saveLoggedUser(loggedUser);
+            }
+            
+            // Clear form
+            this.newEmail.set('');
+            this.currentPasswordEmail.set('');
+          },
+          error: (error) => {
+            this.isLoading.set(false);
+            alert(error.message || 'Error updating email. Please try again.');
+          }
+        });
       },
       error: (error) => {
-        console.error('Error checking email:', error);
+        this.isLoading.set(false);
         alert('Error checking email availability. Please try again.');
       }
     });
@@ -91,10 +112,8 @@ export class SettingsComponent {
 
   // ACTUALIZAR CONTRASEÑA
   changePassword(currentPassword: string, newPassword: string, confirmNewPassword: string): void {
-    const loggedUser = this.storageService.getLoggedUser();
-
-    if (!loggedUser || loggedUser.password !== currentPassword) {
-      alert('Current password is incorrect.');
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      alert('Please fill out all fields.');
       return;
     }
 
@@ -103,12 +122,35 @@ export class SettingsComponent {
       return;
     }
 
-    this.storageService.changePassword(currentPassword, newPassword);
-    alert('Password updated successfully.');
+    if (newPassword.length < 6) {
+      alert('New password must be at least 6 characters long.');
+      return;
+    }
 
-    // Limpieza de campos
-    this.currentPassword.set('');
-    this.newPassword.set('');
-    this.confirmNewPassword.set('');
+    this.isLoading.set(true);
+
+    // Call API to change password
+    this.userSettingsService.changePassword(newPassword).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        alert('Password updated successfully.');
+
+        // Update local storage
+        const loggedUser = this.storageService.getLoggedUser();
+        if (loggedUser) {
+          loggedUser.password = newPassword;
+          this.storageService.saveLoggedUser(loggedUser);
+        }
+
+        // Clear form
+        this.currentPassword.set('');
+        this.newPassword.set('');
+        this.confirmNewPassword.set('');
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        alert(error.message || 'Error updating password. Please try again.');
+      }
+    });
   }
 }
