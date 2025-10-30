@@ -19,7 +19,7 @@ export class Cuenta {
   @Column({ type: 'numeric', precision: 12, scale: 2, default: 0 })
   saldo: number;
 
-  @Column({ length: 10 })
+  @Column({ length: 10, default: 'activo' })
   estado: string;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.cuentas)

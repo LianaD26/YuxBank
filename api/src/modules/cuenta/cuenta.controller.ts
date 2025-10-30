@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { CuentaService } from './cuenta.service';
 import { Cuenta } from './cuenta.entity';
 import { CreateCuentaDto } from './dto/create-cuenta.dto';
@@ -6,10 +6,10 @@ import { UpdateCuentaDto } from './dto/update-cuenta.dto';
 import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiParam, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@ApiTags('cuentas')
+@ApiTags('cuenta')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('cuentas')
+@Controller('cuenta')
 export class CuentaController {
   constructor(private readonly cuentaService: CuentaService) {}
 
@@ -32,8 +32,9 @@ export class CuentaController {
   @ApiOperation({ summary: 'Crear cuenta' })
   @ApiBody({ type: CreateCuentaDto })
   @ApiCreatedResponse({ type: Cuenta })
-  create(@Body() dto: CreateCuentaDto): Promise<Cuenta> {
-    return this.cuentaService.create(dto as any);
+  create(@Body() dto: CreateCuentaDto, @Req() req): Promise<Cuenta> {
+    const userId = req.user.id;
+    return this.cuentaService.create(dto, userId);
   }
 
   @Put(':id')

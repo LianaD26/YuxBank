@@ -24,8 +24,17 @@ export class CuentaService {
     return cuenta;
   }
 
-  create(cuenta: CreateCuentaDto): Promise<Cuenta> {
-    return this.cuentaRepository.save(cuenta as any);
+  async create(cuenta: CreateCuentaDto, userId: number): Promise<Cuenta> {
+    const saldo = Math.floor(Math.random() * (1000000 - 1000 + 1)) + 1000;
+    const estado = 'activo';
+    const nuevaCuenta = this.cuentaRepository.create({
+      num_cuenta: cuenta.num_cuenta,
+      tipo: cuenta.tipo,
+      saldo,
+      estado,
+      id_usuario: userId,
+    });
+    return await this.cuentaRepository.save(nuevaCuenta);
   }
 
   async update(id: number, cuenta: UpdateCuentaDto): Promise<Cuenta> {

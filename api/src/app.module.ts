@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 import { typeOrmConfig } from './database/typeorm.config';
 import { UsuarioModule } from './modules/usuario/usuario.module';
 import { CuentaModule } from './modules/cuenta/cuenta.module';
@@ -17,7 +18,14 @@ import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '..', '.env'),
+        join(__dirname, '..', '.env'),
+        '.env',
+      ],
+    }),
     TypeOrmModule.forRoot(typeOrmConfig),
     UsuarioModule,
     CuentaModule,
