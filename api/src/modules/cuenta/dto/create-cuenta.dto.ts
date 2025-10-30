@@ -7,17 +7,7 @@ export enum CuentaTipo {
   CORRIENTE = 'corriente',
 }
 
-export enum CuentaEstado {
-  ACTIVO = 'activo',
-  INACTIVO = 'inactivo',
-}
-
 export class CreateCuentaDto {
-  @ApiProperty({ description: 'ID del usuario propietario', example: 1 })
-  @Type(() => Number)
-  @IsNumber()
-  id_usuario: number;
-
   @ApiProperty({ description: 'Número de cuenta único', example: '1234567890' })
   @IsString()
   @Length(1, 20)
@@ -27,16 +17,9 @@ export class CreateCuentaDto {
   @IsEnum(CuentaTipo)
   tipo: CuentaTipo;
 
-  @ApiProperty({ description: 'Saldo inicial', example: 0, required: false })
-  @Type(() => Number)
-  @IsOptional()
-  @IsNumber()
-  saldo?: number;
-
-  @ApiProperty({ description: 'Estado de la cuenta', enum: CuentaEstado, example: CuentaEstado.ACTIVO, required: false })
-  @IsOptional()
-  @IsEnum(CuentaEstado)
-  estado?: CuentaEstado;
+  @ApiProperty({ description: 'Contraseña del usuario para validar la creación', example: 'MiClaveSegura123' })
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 }
-
 

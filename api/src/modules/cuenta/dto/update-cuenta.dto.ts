@@ -1,10 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCuentaDto, CuentaEstado, CuentaTipo } from './create-cuenta.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CuentaTipo } from './create-cuenta.dto';
 
-export class UpdateCuentaDto extends PartialType(CreateCuentaDto) {
+export class UpdateCuentaDto {
   @ApiPropertyOptional({ description: 'Número de cuenta', example: '1234567890' })
   @IsOptional()
   @IsString()
@@ -21,11 +20,4 @@ export class UpdateCuentaDto extends PartialType(CreateCuentaDto) {
   @Type(() => Number)
   @IsNumber()
   saldo?: number;
-
-  @ApiPropertyOptional({ description: 'Estado', enum: CuentaEstado })
-  @IsOptional()
-  @IsEnum(CuentaEstado)
-  estado?: CuentaEstado;
 }
-
-

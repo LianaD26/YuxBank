@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, UseGuards, Request, NotFoundException } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { Usuario } from './usuario.entity';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { ApiTags, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBody } from '@nestjs/swagger';
 
@@ -56,11 +56,16 @@ export class UsuarioController {
     return this.usuarioService.changeEmail(req.user.id_usuario, nuevoCorreo);
   }
 
-  @Get(':id')
-  @ApiParam({ name: 'id', type: Number })
+  @Get(':correo')
+  @ApiOperation({ summary: 'Obtener un usuario por correo' })
+  @ApiParam({ name: 'correo', type: String })
   @ApiOkResponse({ type: Usuario })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
-    return this.usuarioService.findOne(id);
+  async findByCorreo(@Param('correo') correo: string): Promise<Usuario> {
+    const usuario = await this.usuarioService.findByCorreo(correo);
+    if (!usuario) {
+      throw new NotFoundException(`No se encontró un usuario con el correo: ${correo}`);
+    }
+    return usuario;
   }
 
   @Put(':id')
@@ -75,5 +80,5 @@ export class UsuarioController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.usuarioService.remove(id);
   }
-  
+
 }
