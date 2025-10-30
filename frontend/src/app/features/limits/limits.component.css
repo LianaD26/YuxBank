@@ -2,8 +2,12 @@
 .limits-container {
   max-width: 600px;
   margin: 2rem auto;
-  padding: 1.5rem;
   font-family: poppins, sans-serif;
+
+  background-color: white;
+  border-radius: 10px;      
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* desplazamiento-x, desplazamiento-y, difuminado, color */
+  padding: 20px;
 } 
 
 .limits-header {
@@ -42,14 +46,14 @@
 .label-title {
   display: block;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: #333;
   margin-bottom: 0.25rem;
 }
 
 .label-desc {
   display: block;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: #777;
 }
 
@@ -70,19 +74,21 @@
 
 .btn-save {
   width: 100%;
-  padding: 0.875rem;
-  background: #4a90e2;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #89b82b, #a6cf3b);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.3s;
 }
 
 .btn-save:hover {
-  background: #357abd;
+  background: linear-gradient(135deg, #7fa02a, #9bc334);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(138, 166, 50, 0.35);
 }
 
 .btn-save:active {

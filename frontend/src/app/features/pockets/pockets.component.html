@@ -1,11 +1,11 @@
 <div class="pockets-container">
     <div class="header-info">
-        <h2>Welcome to create pockets</h2>
+        <h2>Welcome to create pockets</h2><br>
         <p>Here you can create and manage your pockets for better organization of your items.</p>
     </div>
-
+<br>
     <div class="pocket-create">
-        <button type="button" (click)="openPocketManager()">Create Pocket</button>
+        <button type="button" class="btn-primary" (click)="openPocketManager()">Create Pocket</button>
     </div>
 
     <div class="modal-backdrop" *ngIf="showPocketManager" (click)="closePocketManager()" aria-hidden="true"></div>

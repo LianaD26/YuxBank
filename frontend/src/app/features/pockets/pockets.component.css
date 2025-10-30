@@ -1,57 +1,85 @@
 /* Styles para PocketsComponent */
 :host {
 	display: block;
-	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+	font-family: poppins, sans-serif;
 	color: #111827;
 }
 
+/* ------------------ Layout general ------------------ */
 .pockets-container {
-	max-width: 980px;
-	margin: 24px auto;
+	max-width: 690px;
+	margin: 2rem auto;
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
 	gap: 18px;
+
+	background-color: white;
+	border-radius: 10px;      
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* desplazamiento-x, desplazamiento-y, difuminado, color */
+	padding: 20px;
 }
 
+/* ------------------ Header ------------------ */
 .header-info {
+	margin-top: 2.5rem;
 	text-align: center;
 }
 .header-info h2 {
 	margin: 0 0 6px 0;
-	font-size: 1.45rem;
+	font-size: 2.5rem;
 	letter-spacing: -0.01em;
+	color: #5b7900;
 }
 .header-info p {
 	margin: 0;
-	color: #6b7280;
-	font-size: 0.98rem;
+	color: #666;
+	font-size: 1.2rem;
 }
 
-.pocket-create {
-	display:flex;
-	justify-content:center;
-}
-.pocket-create button {
-	background: linear-gradient(180deg,#8aa632,#729026);
-	color: #fff;
+/* ------------------ Botón principal unificado ------------------ */
+.btn-primary {
+	width: 100%;
+	padding: 0.75rem;
+	background: linear-gradient(135deg, #8aa632, #729026);
+	color: white;
 	border: none;
-	padding: 10px 18px;
-	border-radius: 10px;
-	cursor: pointer;
+	border-radius: 8px;
+	font-size: 1.3rem;
 	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.3s, transform 0.2s;
 	box-shadow: 0 6px 18px rgba(114,144,38,0.12);
 }
-.pocket-create button:hover { transform: translateY(-1px); }
-.pocket-create button:active { transform: translateY(0); }
-.pocket-create button:focus { outline: 3px solid rgba(138,166,50,0.16); outline-offset: 2px; }
 
-/* Small card area for listing pockets (if needed) */
+.btn-primary:hover {
+	background: linear-gradient(135deg, #7fa02a, #9bc334);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(138, 166, 50, 0.35);
+}
+
+.btn-primary:focus {
+	outline: 3px solid rgba(138,166,50,0.16);
+	outline-offset: 2px;
+}
+
+.btn-primary:active {
+	transform: translateY(0);
+}
+
+/* ------------------ Contenedor de botón crear pocket ------------------ */
+.pocket-create {
+	display: flex;
+	justify-content: center;
+}
+
+/* ------------------ Lista de pockets ------------------ */
 .pocket-list {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 14px;
 }
+
 .pocket-card {
 	background: #fff;
 	border-radius: 10px;
@@ -59,32 +87,97 @@
 	box-shadow: 0 1px 3px rgba(2,6,23,0.06);
 	border: 1px solid rgba(2,6,23,0.04);
 }
-.pocket-card h4 { margin: 0 0 8px 0; font-size: 1rem; }
-.pocket-card p { margin: 0; color: #6b7280; font-size: 0.95rem; }
 
-/* Form group (used inside the pocket manager component) */
-.form-group { margin-bottom: 12px; }
-.form-group label { display:block; margin-bottom:6px; font-weight:600; color:#111827; }
-.form-group input, .form-group select, .form-group textarea {
-	width:100%; padding:10px; border-radius:8px; border:1px solid rgba(2,6,23,0.06); background:#fff;
-}
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-	outline: none; box-shadow: 0 0 0 6px rgba(138,166,50,0.08); border-color: #8aa632;
+.pocket-card h4 {
+	margin: 0 0 8px 0;
+	font-size: 1rem;
 }
 
-/* Modal styles (scoped) */
+.pocket-card p {
+	margin: 0;
+	color: #6b7280;
+	font-size: 0.95rem;
+}
+
+/* ------------------ Formulario del Pocket Manager ------------------ */
+.form-group {
+	margin-bottom: 12px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+	color: #111827;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+	width: 100%;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid rgba(2,6,23,0.06);
+	background: #fff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+	outline: none;
+	box-shadow: 0 0 0 6px rgba(138,166,50,0.08);
+	border-color: #8aa632;
+}
+
+/* ------------------ Modal ------------------ */
 .modal-backdrop {
-	position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1200; backdrop-filter: blur(2px);
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.45);
+	z-index: 1200;
+	backdrop-filter: blur(2px);
 }
-.modal {
-	position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index: 1201; padding: 18px;
-}
-.modal-content {
-	width: 100%; max-width: 640px; background: #fff; border-radius: 12px; overflow: hidden;
-	box-shadow: 0 12px 40px rgba(2,6,23,0.12); border: 1px solid rgba(2,6,23,0.04);
-}
-.modal-header { display:flex; align-items:center; justify-content:space-between; padding: 12px 16px; border-bottom: 1px solid rgba(2,6,23,0.04); }
-.modal-header h3 { margin:0; font-size: 1.05rem; }
-.modal-close { background: transparent; border: none; font-size: 1.35rem; cursor: pointer; padding: 6px 10px; }
-.modal-body { padding: 16px; }
 
+.modal {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1201;
+	padding: 18px;
+}
+
+.modal-content {
+	width: 100%;
+	max-width: 640px;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 12px 40px rgba(2,6,23,0.12);
+	border: 1px solid rgba(2,6,23,0.04);
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	border-bottom: 1px solid rgba(2,6,23,0.04);
+}
+
+.modal-header h3 {
+	margin: 0;
+	font-size: 1rem;
+}
+
+.modal-body {
+	padding: 16px;
+}
+
+.modal-close {
+	background: transparent;
+	border: none;
+	font-size: 1.35rem;
+	cursor: pointer;
+	padding: 6px 10px;
+}
