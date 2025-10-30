@@ -68,8 +68,8 @@
             name="fromAccount"
             required>
             <option value="">Select an account</option>
-            <option *ngFor="let account of accounts" [value]="account.number">
-              {{ account.type }} - {{ account.number }} (Balance: ${{ account.balance.toFixed(2) }})
+            <option *ngFor="let account of accounts" [value]="account.num_cuenta">
+              {{ account.tipo }} - {{ account.num_cuenta }} (Balance: ${{ account.saldo.toFixed(2) }})
             </option>
           </select>
         </div>

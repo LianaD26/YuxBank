@@ -72,11 +72,11 @@
       <div *ngIf="accounts().length > 0; else noAccounts" class="accounts-list">
         <div *ngFor="let account of accounts()" class="account-item">
           <div class="account-info">
-            <strong>{{ account.type }}</strong>
-            <span>{{ account.number }}</span>
+            <strong>{{ account.tipo }}</strong>
+            <span>{{ account.num_cuenta }}</span>
           </div>
           <button 
-            (click)="deleteAccount(account.number)"
+            (click)="deleteAccount(account.id_cuenta)"
             class="btn-delete">
             Delete
           </button>

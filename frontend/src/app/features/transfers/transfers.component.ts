@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
-import { AccountService, Account } from '../../services/account.service';
+import { AccountService, AccountResponse } from '../../services/account.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, switchMap, startWith, tap } from 'rxjs/operators';
 import { Transaction } from './transaction.model';
@@ -36,8 +36,8 @@ export class TransfersComponent implements OnInit {
   isLoading = false;
   selectedTx: Transaction | null = null;
   // CUENTAS ORIGEN
-  accounts: Account[] = [];
-  selectedFromAccount: Account | null = null;
+  accounts: AccountResponse[] = [];
+  selectedFromAccount: AccountResponse | null = null;
   
   private transactionsSubject = new BehaviorSubject<Transaction[]>([]);
 
@@ -54,8 +54,8 @@ export class TransfersComponent implements OnInit {
     // Inicializar datos de ejemplo para transacciones
     this.loadMockTransactions();
 
-    // Cargar cuentas desde AccountService
-    this.accounts = this.accountService.getAccounts();
+    // Load accounts from AccountService
+    this.loadAccounts();
 
     // Configurar búsqueda con debounce
     this.transactions$ = this.search$.pipe(
@@ -65,6 +65,18 @@ export class TransfersComponent implements OnInit {
       switchMap(query => this.filterTransactions(query)),
       tap(() => this.isLoading = false)
     );
+  }
+
+  private loadAccounts() {
+    this.accountService.getAccounts().subscribe({
+      next: (accounts) => {
+        this.accounts = accounts;
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+        this.accounts = [];
+      }
+    });
   }
 
   private loadUserLimits() {
@@ -102,7 +114,7 @@ export class TransfersComponent implements OnInit {
     }
 
     // Reload accounts when opening modal to reflect changes
-    this.accounts = this.accountService.getAccounts();
+    this.loadAccounts();
   }
 
   onSelectFrom(id: string) {
@@ -110,7 +122,7 @@ export class TransfersComponent implements OnInit {
       this.selectedFromAccount = null;
       return;
     }
-    this.selectedFromAccount = this.accounts.find(a => a.number === id) || null;
+    this.selectedFromAccount = this.accounts.find(a => a.num_cuenta === id) || null;
   }
 
   closeModal() {

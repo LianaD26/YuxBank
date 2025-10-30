@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../services/storage.service';
-import { AccountService, Account } from '../../services/account.service';
+import { AccountService, AccountResponse } from '../../services/account.service';
 import { TransactionService } from '../../services/transaction.service';
 import { Transaction } from '../transfers/transaction.model';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
@@ -55,7 +55,7 @@ export class PaymentServicesComponentComponent implements OnInit {
   selectedService: PaymentService | null = null;
   
   // Available accounts
-  accounts: Account[] = [];
+  accounts: AccountResponse[] = [];
   
   // Form data
   fromAccount = '';
@@ -87,7 +87,15 @@ export class PaymentServicesComponentComponent implements OnInit {
   }
 
   loadAccounts() {
-    this.accounts = this.accountService.getAccounts();
+    this.accountService.getAccounts().subscribe({
+      next: (accounts) => {
+        this.accounts = accounts;
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+        this.accounts = [];
+      }
+    });
   }
 
   selectPage(page: string) {
@@ -146,25 +154,20 @@ export class PaymentServicesComponentComponent implements OnInit {
     }
 
     // Verify account exists
-    const account = this.accountService.getAccountByNumber(this.fromAccount);
+    const account = this.accounts.find(acc => acc.num_cuenta === this.fromAccount);
     if (!account) {
       alert('The selected account does not exist.');
       return;
     }
 
     // Check sufficient balance
-    if (account.balance < this.amount) {
-      alert(`Insufficient balance. Available: $${account.balance.toFixed(2)}, Required: $${this.amount.toFixed(2)}`);
+    if (account.saldo < this.amount) {
+      alert(`Insufficient balance. Available: $${account.saldo.toFixed(2)}, Required: $${this.amount.toFixed(2)}`);
       return;
     }
 
-    // Deduct amount from account
-    const success = this.accountService.updateAccountBalance(this.fromAccount, -this.amount);
-    
-    if (!success) {
-      alert('Error processing payment. Please try again.');
-      return;
-    }
+    // Note: Balance update should be handled by the API when creating the transaction
+    // For now, we'll proceed with creating the transaction record
 
     // Create transaction description
     let description = '';
@@ -196,7 +199,10 @@ export class PaymentServicesComponentComponent implements OnInit {
 
     console.log('Payment processed:', transaction);
     
-    alert(`Payment of $${this.amount.toFixed(2)} for ${this.selectedService.name} processed successfully!\nNew balance: $${(account.balance - this.amount).toFixed(2)}`);
+    alert(`Payment of $${this.amount.toFixed(2)} for ${this.selectedService.name} processed successfully!\nNew balance: $${(account.saldo - this.amount).toFixed(2)}`);
     this.closeModal();
+    
+    // Reload accounts to get updated balances
+    this.loadAccounts();
   }
 }

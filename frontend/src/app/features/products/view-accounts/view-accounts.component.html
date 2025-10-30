@@ -10,11 +10,11 @@
   </thead>
   <tbody>
     <tr *ngFor="let account of accounts()">
-      <td>{{ account.type }}</td>
-      <td>{{ account.number }}</td>
-      <td>{{ account.balance | currency:'USD' }}</td>
+      <td>{{ account.tipo }}</td>
+      <td>{{ account.num_cuenta }}</td>
+      <td>{{ account.saldo | currency:'USD' }}</td>
       <td>
-        <button (click)="deleteAccount(account.number)">Delete</button>
+        <button (click)="deleteAccount(account.id_cuenta)">Delete</button>
       </td>
     </tr>
   </tbody>

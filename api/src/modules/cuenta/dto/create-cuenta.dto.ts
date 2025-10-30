@@ -17,9 +17,9 @@ export class CreateCuentaDto {
   @IsEnum(CuentaTipo)
   tipo: CuentaTipo;
 
-  @ApiProperty({ description: 'Contraseña del usuario para validar la creación', example: 'MiClaveSegura123' })
+  @ApiProperty({ description: 'Contraseña de la cuenta (opcional)', example: 'MiClaveSegura123', required: false })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  password: string;
+  password?: string;
 }
 

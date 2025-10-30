@@ -1,15 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { Cuenta } from './cuenta.entity';
 import { CreateCuentaDto } from './dto/create-cuenta.dto';
 import { UpdateCuentaDto } from './dto/update-cuenta.dto';
+import { Usuario } from '../usuario/usuario.entity';
 
 @Injectable()
 export class CuentaService {
   constructor(
     @InjectRepository(Cuenta)
     private readonly cuentaRepository: Repository<Cuenta>,
+    @InjectRepository(Usuario)
+    private readonly usuarioRepository: Repository<Usuario>,
   ) {}
 
   findAll(): Promise<Cuenta[]> {
@@ -25,6 +29,12 @@ export class CuentaService {
   }
 
   async create(cuenta: CreateCuentaDto, userId: number): Promise<Cuenta> {
+    // Check if account number already exists
+    const existingAccount = await this.cuentaRepository.findOne({ where: { num_cuenta: cuenta.num_cuenta } });
+    if (existingAccount) {
+      throw new BadRequestException('El número de cuenta ya existe');
+    }
+
     const saldo = Math.floor(Math.random() * (1000000 - 1000 + 1)) + 1000;
     const estado = 'activo';
     const nuevaCuenta = this.cuentaRepository.create({

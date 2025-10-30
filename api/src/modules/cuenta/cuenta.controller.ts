@@ -33,7 +33,7 @@ export class CuentaController {
   @ApiBody({ type: CreateCuentaDto })
   @ApiCreatedResponse({ type: Cuenta })
   create(@Body() dto: CreateCuentaDto, @Req() req): Promise<Cuenta> {
-    const userId = req.user.id;
+    const userId = req.user.id_usuario;
     return this.cuentaService.create(dto, userId);
   }
 

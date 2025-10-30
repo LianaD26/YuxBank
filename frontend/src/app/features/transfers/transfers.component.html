@@ -54,7 +54,7 @@
                     From Account
                     <select name="fromAccount" (change)="onSelectFrom($any($event.target).value)">
                       <option value="">-- Select source account --</option>
-                      <option *ngFor="let a of accounts" [value]="a.number">{{ a.type }} - {{ a.number }} (Saldo: {{ a.balance | currency }})</option>
+                      <option *ngFor="let a of accounts" [value]="a.num_cuenta">{{ a.tipo }} - {{ a.num_cuenta }} (Saldo: {{ a.saldo | currency }})</option>
                     </select>
                   </label>
 

@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SerchBarComponent } from '../../shared/serch-bar/serch-bar.component';
-import { AccountService } from '../../services/account.service';
+import { AccountService, AccountResponse } from '../../services/account.service';
 
 @Component({
   selector: 'app-products',
@@ -11,7 +11,7 @@ import { AccountService } from '../../services/account.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   // Estado del componente
   selectedOption: 'register' | 'view' = 'register';
 
@@ -24,19 +24,29 @@ export class ProductsComponent {
   accountType = signal('');
   accountNumber = signal('');
   password = signal('');
-  accounts = signal<any[]>([]);
+  accounts = signal<AccountResponse[]>([]);
 
   constructor(private accountService: AccountService) {
-    
     console.log('🔍 ProductsComponent - sidebarRoutes:', this.sidebarRoutes);
     console.log('🔍 Type of sidebarRoutes:', typeof this.sidebarRoutes);
     console.log('🔍 Is Array?:', Array.isArray(this.sidebarRoutes));
     console.log('🔍 Length:', this.sidebarRoutes.length);
+  }
 
-    const savedAccounts = this.accountService.getAccounts();
-    if (savedAccounts) {
-      this.accounts.set(savedAccounts);
-    }
+  ngOnInit() {
+    this.loadAccounts();
+  }
+
+  loadAccounts() {
+    this.accountService.getAccounts().subscribe({
+      next: (accounts) => {
+        this.accounts.set(accounts);
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+        this.accounts.set([]);
+      }
+    });
   }
 
   // Cambiar opción en el menú lateral
@@ -57,29 +67,42 @@ export class ProductsComponent {
       return;
     }
 
-    if (this.accountService.accountExists(number)) {
-      alert('The account number is already registered.');
-      return;
-    }
-
     this.accountService.registerAccount({
       type,
       number,
       password: pass,
       balance: 0
+    }).subscribe({
+      next: (response) => {
+        console.log('Account registered successfully:', response);
+        alert('Account successfully registered.');
+        
+        // Clear form
+        this.accountType.set('');
+        this.accountNumber.set('');
+        this.password.set('');
+        
+        // Reload accounts
+        this.loadAccounts();
+      },
+      error: (error) => {
+        console.error('Error registering account:', error);
+        alert(error.message || 'Error registering account.');
+      }
     });
-
-    this.accounts.set(this.accountService.getAccounts());
-    this.accountType.set('');
-    this.accountNumber.set('');
-    this.password.set('');
-
-    alert('Account successfully registered.');
   }
 
   // Eliminar cuenta
-  deleteAccount(accountNumber: string) {
-    this.accountService.deleteAccount(accountNumber);
-    this.accounts.set(this.accountService.getAccounts());
+  deleteAccount(accountId: number) {
+    this.accountService.deleteAccount(accountId).subscribe({
+      next: () => {
+        alert('Account deleted successfully.');
+        this.loadAccounts();
+      },
+      error: (error) => {
+        console.error('Error deleting account:', error);
+        alert(error.message || 'Error deleting account.');
+      }
+    });
   }
 }

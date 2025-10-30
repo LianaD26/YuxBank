@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AccountService, Account } from '../../services/account.service';
+import { AccountService, AccountResponse } from '../../services/account.service';
 
 @Component({
   selector: 'app-pocket-manager',
@@ -10,23 +10,31 @@ import { AccountService, Account } from '../../services/account.service';
   templateUrl: './pocket-manager.component.html',
   styleUrls: ['./pocket-manager.component.css']
 })
-export class PocketManagerComponent {
+export class PocketManagerComponent implements OnInit {
   @Output() created = new EventEmitter<any>();
   name = '';
   description = '';
   count = '';
   value: number | null = null;
-  accounts: Account[] = [];
+  accounts: AccountResponse[] = [];
   selectedAccount: string | null = null;
 
   constructor(private accountService: AccountService) {}
 
   ngOnInit(): void {
-    // Cargar cuentas disponibles desde el servicio
-    this.accounts = this.accountService.getAccounts();
-    if (this.accounts.length > 0) {
-      this.selectedAccount = this.accounts[0].number;
-    }
+    // Load available accounts from the service
+    this.accountService.getAccounts().subscribe({
+      next: (accounts) => {
+        this.accounts = accounts;
+        if (this.accounts.length > 0) {
+          this.selectedAccount = this.accounts[0].num_cuenta;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+        this.accounts = [];
+      }
+    });
   }
 
   createPocket(form: NgForm) {
@@ -38,8 +46,8 @@ export class PocketManagerComponent {
     this.created.emit(data);
 
     form.resetForm();
-    // Reset selección a la primera cuenta si existe
-    if (this.accounts.length > 0) this.selectedAccount = this.accounts[0].number;
+    // Reset selection to the first account if it exists
+    if (this.accounts.length > 0) this.selectedAccount = this.accounts[0].num_cuenta;
     else this.selectedAccount = null;
   }
 }

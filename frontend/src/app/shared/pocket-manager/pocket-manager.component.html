@@ -18,7 +18,7 @@
         <div class="form-group" *ngIf="accounts && accounts.length > 0">
             <label for="from-account">Cuenta origen:</label>
             <select id="from-account" name="fromAccount" required [(ngModel)]="selectedAccount">
-                <option *ngFor="let acc of accounts" [value]="acc.number">{{acc.type}} - {{acc.number}} (Saldo: {{acc.balance | currency}})</option>
+                <option *ngFor="let acc of accounts" [value]="acc.num_cuenta">{{acc.tipo}} - {{acc.num_cuenta}} (Saldo: {{acc.saldo | currency}})</option>
             </select>
         </div>
         <button type="submit" [disabled]="pocketForm.invalid">Create Pocket</button>    
