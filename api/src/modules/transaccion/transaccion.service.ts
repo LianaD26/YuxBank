@@ -204,16 +204,19 @@ export class TransaccionService {
                 throw new ForbiddenException('No autorizado para operar la cuenta origen');
             }
 
-            // Tope: validar contra tope de tipo transferencia del usuario
+            // Tope: validar contra tope según el tipo de transacción
+            // 'transferencia' usa tope de transferencia
+            // 'pago' usa tope de consumo
+            const tipoTope = dto.tipo === 'pago' ? 'consumo' : 'transferencia';
             const tope = await queryRunner.manager
                 .getRepository('tope')
                 .createQueryBuilder('t')
                 .where('t.id_usuario = :userId', { userId })
-                .andWhere('t.tipo = :tipo', { tipo: 'transferencia' })
+                .andWhere('t.tipo = :tipo', { tipo: tipoTope })
                 .getOne();
 
             if (tope && Number(dto.monto) > Number((tope as any).monto_maximo)) {
-                throw new NotFoundException('Monto excede el tope permitido');
+                throw new NotFoundException(`Monto excede el tope permitido para ${dto.tipo}`);
             }
 
             // Saldo suficiente

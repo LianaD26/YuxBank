@@ -76,6 +76,13 @@ export class PaymentServicesComponentComponent implements OnInit {
   amount = 0;
   reference = '';
 
+  // Payment History
+  paymentHistory: Transaction[] = [];
+  filteredPayments: Transaction[] = [];
+  isLoadingHistory = false;
+  selectedPayment: Transaction | null = null;
+  searchQuery = '';
+
   constructor(
     private storageService: StorageService,
     private accountService: AccountService,
@@ -85,11 +92,21 @@ export class PaymentServicesComponentComponent implements OnInit {
   ngOnInit() {
     // Load available accounts
     this.loadAccounts();
+    // Load payment history
+    this.loadPaymentHistory();
   }
 
   loadAccounts() {
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
+      console.warn('No authentication token found. User must login first.');
+      this.accounts = [];
+      return;
+    }
+
     this.accountService.getAccounts().subscribe({
       next: (accounts) => {
+        console.log('Accounts loaded:', accounts);
         this.accounts = accounts;
       },
       error: (error) => {
@@ -102,7 +119,60 @@ export class PaymentServicesComponentComponent implements OnInit {
   selectPage(page: string) {
     if (page === 'services' || page === 'history') {
       this.selectedPage = page;
+      // Reload history when switching to history page
+      if (page === 'history') {
+        this.loadPaymentHistory();
+      }
     }
+  }
+
+  loadPaymentHistory() {
+    const token = localStorage.getItem('yuxbank_token');
+    if (!token) {
+      console.warn('No authentication token found. User must login first.');
+      this.paymentHistory = [];
+      this.filteredPayments = [];
+      return;
+    }
+
+    this.isLoadingHistory = true;
+    this.transactionService.getTransactions().subscribe({
+      next: (transactions) => {
+        // Filter only 'pago' type transactions
+        this.paymentHistory = transactions.filter(tx => tx.type === 'pago');
+        this.filteredPayments = [...this.paymentHistory];
+        this.isLoadingHistory = false;
+        console.log('Payment history loaded:', this.paymentHistory.length, 'payments');
+      },
+      error: (error) => {
+        console.error('Error loading payment history:', error);
+        this.paymentHistory = [];
+        this.filteredPayments = [];
+        this.isLoadingHistory = false;
+      }
+    });
+  }
+
+  filterPayments() {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      this.filteredPayments = [...this.paymentHistory];
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase();
+    this.filteredPayments = this.paymentHistory.filter(payment => 
+      payment.id.toLowerCase().includes(query) ||
+      payment.description?.toLowerCase().includes(query) ||
+      payment.status.toLowerCase().includes(query)
+    );
+  }
+
+  openPaymentDetail(payment: Transaction) {
+    this.selectedPayment = payment;
+  }
+
+  closePaymentDetail() {
+    this.selectedPayment = null;
   }
 
   openServiceModal(service: PaymentService) {
@@ -138,22 +208,6 @@ export class PaymentServicesComponentComponent implements OnInit {
       return;
     }
 
-    // Validate service-specific fields
-    if (this.selectedService.id === 'utilities' && !this.accountNumber) {
-      alert('Please enter the account number.');
-      return;
-    }
-
-    if (this.selectedService.id === 'civica' && !this.civicaCardNumber) {
-      alert('Please enter the Civica card number.');
-      return;
-    }
-
-    if (this.selectedService.id === 'mobile' && !this.phoneNumber) {
-      alert('Please enter the phone number.');
-      return;
-    }
-
     // Verify account exists
     const account = this.accounts.find(acc => acc.num_cuenta === this.fromAccount);
     if (!account) {
@@ -168,19 +222,19 @@ export class PaymentServicesComponentComponent implements OnInit {
       return;
     }
 
-    // Create transaction description
+    // Create transaction description (simulado - los servicios no requieren cuentas reales)
     let description = '';
-    let destinationAccount = '';
+    let destinationAccount = 'SIMULATED_SERVICE'; // Cuenta simulada para servicios
     
     if (this.selectedService.id === 'utilities') {
-      description = `${this.utilityType.charAt(0).toUpperCase() + this.utilityType.slice(1)} payment - Account: ${this.accountNumber}`;
-      destinationAccount = this.accountNumber;
+      const accountNum = this.accountNumber || 'N/A';
+      description = `${this.utilityType.charAt(0).toUpperCase() + this.utilityType.slice(1)} payment${accountNum !== 'N/A' ? ' - Account: ' + accountNum : ''}`;
     } else if (this.selectedService.id === 'civica') {
-      description = `Civica card recharge - Card: ${this.civicaCardNumber}`;
-      destinationAccount = this.civicaCardNumber;
+      const cardNum = this.civicaCardNumber || 'N/A';
+      description = `Civica card recharge${cardNum !== 'N/A' ? ' - Card: ' + cardNum : ''}`;
     } else if (this.selectedService.id === 'mobile') {
-      description = `Mobile recharge - ${this.phoneNumber} (${this.mobileCarrier})`;
-      destinationAccount = this.phoneNumber;
+      const phoneNum = this.phoneNumber || 'N/A';
+      description = `Mobile recharge${phoneNum !== 'N/A' ? ' - ' + phoneNum : ''}${this.mobileCarrier ? ' (' + this.mobileCarrier + ')' : ''}`;
     }
 
     if (this.reference) {
@@ -206,6 +260,9 @@ export class PaymentServicesComponentComponent implements OnInit {
         
         // Reload accounts to get updated balances
         this.loadAccounts();
+        
+        // Reload payment history
+        this.loadPaymentHistory();
       },
       error: (error) => {
         alert(error.message || 'Error processing payment. Please try again.');

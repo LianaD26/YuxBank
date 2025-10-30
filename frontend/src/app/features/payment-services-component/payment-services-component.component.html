@@ -38,7 +38,52 @@
         </div>
 
         <div class="history-container">
-          <p class="info-message">Payment history will be displayed here. This feature is coming soon.</p>
+          <!-- Search bar -->
+          <div class="search-bar">
+            <input 
+              type="search" 
+              placeholder="Search by ID, description or status..."
+              [(ngModel)]="searchQuery"
+              (input)="filterPayments()"
+              class="search-input">
+            <span class="search-icon">🔍</span>
+          </div>
+
+          <!-- Loading state -->
+          <div *ngIf="isLoadingHistory" class="loading-state">
+            <p>Loading payment history...</p>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="!isLoadingHistory && filteredPayments.length === 0" class="empty-state">
+            <div class="empty-icon">📄</div>
+            <p *ngIf="searchQuery">No payments found matching "{{ searchQuery }}"</p>
+            <p *ngIf="!searchQuery">No payment history yet. Make your first payment to see it here.</p>
+          </div>
+
+          <!-- Payment list -->
+          <div *ngIf="!isLoadingHistory && filteredPayments.length > 0" class="payments-list">
+            <div 
+              *ngFor="let payment of filteredPayments" 
+              class="payment-item"
+              (click)="openPaymentDetail(payment)">
+              <div class="payment-info">
+                <div class="payment-header">
+                  <span class="payment-icon">💳</span>
+                  <div class="payment-details">
+                    <h4 class="payment-description">{{ payment.description || 'Payment' }}</h4>
+                    <p class="payment-date">{{ payment.date | date:'medium' }}</p>
+                  </div>
+                </div>
+                <div class="payment-amount-status">
+                  <p class="payment-amount">{{ payment.amount | currency:'USD':'symbol':'1.2-2' }}</p>
+                  <span class="payment-status" [class.completed]="payment.status === 'completed'">
+                    {{ payment.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -69,9 +114,10 @@
             required>
             <option value="">Select an account</option>
             <option *ngFor="let account of accounts" [value]="account.num_cuenta">
-              {{ account.tipo }} - {{ account.num_cuenta }} (Balance: ${{ account.saldo.toFixed(2) }})
+              {{ account.tipo }} - {{ account.num_cuenta }} (Balance: {{ account.saldo | currency:'USD':'symbol':'1.2-2' }})
             </option>
           </select>
+          <small *ngIf="accounts.length === 0" class="help-text">No accounts available. Please login or create an account first.</small>
         </div>
 
         <!-- Utilities Specific -->
@@ -92,41 +138,38 @@
           </div>
 
           <div class="form-group">
-            <label for="accountNumber">Account Number *</label>
+            <label for="accountNumber">Account Number (Optional)</label>
             <input 
               id="accountNumber"
               type="text"
               [(ngModel)]="accountNumber"
               name="accountNumber"
-              placeholder="Enter service account number"
-              required>
+              placeholder="Enter service account number (optional)">
           </div>
         </ng-container>
 
         <!-- Civica Card Specific -->
         <ng-container *ngIf="selectedService.id === 'civica'">
           <div class="form-group">
-            <label for="civicaCardNumber">Civica Card Number *</label>
+            <label for="civicaCardNumber">Civica Card Number (Optional)</label>
             <input 
               id="civicaCardNumber"
               type="text"
               [(ngModel)]="civicaCardNumber"
               name="civicaCardNumber"
-              placeholder="Enter your card number"
-              maxlength="16"
-              required>
+              placeholder="Enter your card number (optional)"
+              maxlength="16">
           </div>
         </ng-container>
 
         <!-- Mobile Recharge Specific -->
         <ng-container *ngIf="selectedService.id === 'mobile'">
           <div class="form-group">
-            <label for="mobileCarrier">Mobile Carrier *</label>
+            <label for="mobileCarrier">Mobile Carrier</label>
             <select 
               id="mobileCarrier"
               [(ngModel)]="mobileCarrier"
-              name="mobileCarrier"
-              required>
+              name="mobileCarrier">
               <option value="carrier1">Carrier 1</option>
               <option value="carrier2">Carrier 2</option>
               <option value="carrier3">Carrier 3</option>
@@ -135,15 +178,14 @@
           </div>
 
           <div class="form-group">
-            <label for="phoneNumber">Phone Number *</label>
+            <label for="phoneNumber">Phone Number (Optional)</label>
             <input 
               id="phoneNumber"
               type="tel"
               [(ngModel)]="phoneNumber"
               name="phoneNumber"
-              placeholder="Enter phone number"
-              maxlength="10"
-              required>
+              placeholder="Enter phone number (optional)"
+              maxlength="10">
           </div>
         </ng-container>
 
@@ -177,5 +219,63 @@
         </footer>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- Payment Detail Modal -->
+<div *ngIf="selectedPayment" class="modal-overlay" (click)="closePaymentDetail()">
+  <div class="modal-content detail-modal" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>Payment Details</h2>
+      <button class="close-btn" (click)="closePaymentDetail()">✖</button>
+    </header>
+    
+    <div class="detail-content">
+      <div class="detail-section">
+        <h3>Transaction Information</h3>
+        <div class="detail-row">
+          <span class="detail-label">Transaction ID:</span>
+          <span class="detail-value">{{ selectedPayment.id }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Date:</span>
+          <span class="detail-value">{{ selectedPayment.date | date:'medium' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Type:</span>
+          <span class="detail-value">{{ selectedPayment.type }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-badge" [class.completed]="selectedPayment.status === 'completed'">
+            {{ selectedPayment.status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>Payment Details</h3>
+        <div class="detail-row">
+          <span class="detail-label">Description:</span>
+          <span class="detail-value">{{ selectedPayment.description || 'N/A' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Amount:</span>
+          <span class="detail-value amount-highlight">{{ selectedPayment.amount | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Currency:</span>
+          <span class="detail-value">{{ selectedPayment.currency }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedPayment.merchant">
+          <span class="detail-label">Merchant:</span>
+          <span class="detail-value">{{ selectedPayment.merchant.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer">
+      <button type="button" class="btn-primary" (click)="closePaymentDetail()">Close</button>
+    </footer>
   </div>
 </div>
