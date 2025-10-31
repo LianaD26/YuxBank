@@ -28,9 +28,6 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets authorization headers with JWT token
-   */
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('yuxbank_token');
     return new HttpHeaders({
@@ -39,18 +36,13 @@ export class AccountService {
     });
   }
 
-  /**
-   * Registers a new account in the API
-   */
   registerAccount(account: Account): Observable<AccountResponse> {
-    // Convert account type to backend format
     let tipoBackend: string;
     if (account.type === 'Savings') {
       tipoBackend = 'ahorros';
     } else if (account.type === 'Checking') {
       tipoBackend = 'corriente';
     } else {
-      // If already in Spanish format, use as is
       tipoBackend = account.type;
     }
 
@@ -66,9 +58,6 @@ export class AccountService {
       );
   }
 
-  /**
-   * Gets all accounts from the API
-   */
   getAccounts(): Observable<AccountResponse[]> {
     console.log('=== GETTING ACCOUNTS ===');
     console.log('API URL:', this.apiUrl);
@@ -83,9 +72,6 @@ export class AccountService {
       );
   }
 
-  /**
-   * Deletes an account by ID
-   */
   deleteAccount(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
       .pipe(
@@ -93,19 +79,13 @@ export class AccountService {
       );
   }
 
-  /**
-   * Handles HTTP errors
-   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
       if (error.status === 400) {
-        // Show detailed validation errors
         const serverError = error.error;
         if (serverError?.message) {
           if (Array.isArray(serverError.message)) {

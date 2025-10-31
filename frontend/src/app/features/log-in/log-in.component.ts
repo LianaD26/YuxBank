@@ -14,7 +14,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./log-in.component.css']
 })
 export class LogInComponent {
-  // Signals para data binding
   email = signal('');
   password = signal('');
   isLoading = signal(false);
@@ -24,7 +23,6 @@ export class LogInComponent {
     private router: Router
   ) {}
 
-  // Actualizar email y password
   updateEmail(value: string): void {
     this.email.set(value);
   }
@@ -33,32 +31,27 @@ export class LogInComponent {
     this.password.set(value);
   }
 
-  // Handle login
   onSubmit(): void {
-    // Client-side validations
     if (!this.email() || !this.password()) {
       alert('Please complete all fields.');
       return;
     }
 
-    // Start login process
     this.isLoading.set(true);
 
     this.logInUserService.login(this.email().trim(), this.password().trim()).subscribe({
       next: (response) => {
         console.log('User authenticated successfully:', response);
         
-        // Save token in localStorage
         if (response.token) {
           localStorage.setItem('yuxbank_token', response.token);
-          localStorage.setItem('token', 'true'); // For compatibility with auth guard
+          localStorage.setItem('token', 'true');
           localStorage.setItem('yuxbank_user', JSON.stringify(response.usuario));
         }
 
         this.isLoading.set(false);
         alert('Welcome back to YuxBank!');
         
-        // Redirect to protected area
         this.router.navigate(['/products']);
       },
       error: (error) => {

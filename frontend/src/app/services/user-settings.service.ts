@@ -12,9 +12,6 @@ export class UserSettingsService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets authorization headers with JWT token
-   */
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('yuxbank_token');
     return new HttpHeaders({
@@ -23,9 +20,6 @@ export class UserSettingsService {
     });
   }
 
-  /**
-   * Changes user email
-   */
   changeEmail(newEmail: string): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(
       `${this.apiUrl}/change-email`,
@@ -36,9 +30,6 @@ export class UserSettingsService {
     );
   }
 
-  /**
-   * Changes user password
-   */
   changePassword(newPassword: string): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(
       `${this.apiUrl}/change-password`,
@@ -49,17 +40,12 @@ export class UserSettingsService {
     );
   }
 
-  /**
-   * Handles HTTP errors
-   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
       if (error.status === 400) {
         const serverError = error.error;
         if (serverError?.message) {

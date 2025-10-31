@@ -71,7 +71,6 @@ export class SettingsComponent {
 
     this.isLoading.set(true);
 
-    // Verificar si el email ya existe
     this.registerUserService.emailExists(newEmail).subscribe({
       next: (exists) => {
         if (exists) {
@@ -80,7 +79,6 @@ export class SettingsComponent {
           return;
         }
 
-        // El email está disponible, proceder con la actualización en la API
         this.userSettingsService.changeEmail(newEmail).subscribe({
           next: (response) => {
             this.isLoading.set(false);

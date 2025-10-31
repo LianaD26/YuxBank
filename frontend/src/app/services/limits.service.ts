@@ -30,7 +30,6 @@ export class LimitsService {
     });
   }
 
-  // Obtener límites del usuario autenticado desde la API
   getLimits(): Observable<UserLimits> {
     return this.http.get<TopeResponse[]>(this.apiUrl, { headers: this.getHeaders() })
       .pipe(
@@ -54,7 +53,6 @@ export class LimitsService {
     };
   }
 
-  // Guardar límites del usuario autenticado
   saveLimits(limits: UserLimits): Observable<any> {
     const headers = this.getHeaders();
     
@@ -63,11 +61,9 @@ export class LimitsService {
       switchMap(existingTopes => {
         const requests: Observable<any>[] = [];
         
-        // Buscar topes existentes
         const transferenciaTope = existingTopes.find(t => t.tipo === 'transferencia');
         const consumoTope = existingTopes.find(t => t.tipo === 'consumo');
         
-        // Actualizar o crear tope de transferencia (mismo banco)
         if (transferenciaTope) {
           requests.push(
             this.http.put(`${this.apiUrl}/${transferenciaTope.id_tope}`, {
@@ -84,8 +80,6 @@ export class LimitsService {
           );
         }
         
-        // Actualizar o crear tope de consumo (otro banco y programadas)
-        // Usamos el mayor de los dos valores
         const consumoMax = Math.max(limits.otherBankTransferLimit, limits.scheduledTransferLimit);
         if (consumoTope) {
           requests.push(
@@ -103,12 +97,10 @@ export class LimitsService {
           );
         }
         
-        // Si no hay peticiones, retornar éxito
         if (requests.length === 0) {
           return of({ success: true });
         }
         
-        // Ejecutar todas las peticiones en paralelo
         return forkJoin(requests);
       }),
       catchError(error => {
@@ -118,7 +110,6 @@ export class LimitsService {
     );
   }
 
-  // Método legacy para compatibilidad
   getLimitsForUser(email: string): UserLimits {
     return { 
       sameBankTransferLimit: 0,

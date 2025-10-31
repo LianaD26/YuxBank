@@ -33,7 +33,6 @@ export class PocketService {
     });
   }
 
-  // Obtener bolsillos del usuario autenticado desde la API
   getPockets(): Observable<BolsilloResponse[]> {
     return this.http.get<BolsilloResponse[]>(this.apiUrl, { headers: this.getHeaders() })
       .pipe(
@@ -44,7 +43,6 @@ export class PocketService {
       );
   }
 
-  // Crear bolsillo (deduce dinero de la cuenta)
   createPocket(nombre: string, saldo: number, numCuenta: string): Observable<BolsilloResponse> {
     const params = numCuenta ? `?num_cuenta=${numCuenta}` : '';
     return this.http.post<BolsilloResponse>(
@@ -59,7 +57,6 @@ export class PocketService {
     );
   }
 
-  // Actualizar bolsillo
   updatePocket(id: number, nombre: string, saldo: number): Observable<BolsilloResponse> {
     return this.http.put<BolsilloResponse>(
       `${this.apiUrl}/${id}`,
@@ -73,7 +70,6 @@ export class PocketService {
     );
   }
 
-  // Eliminar bolsillo (devuelve dinero a la cuenta)
   deletePocket(id: number, numCuenta: string): Observable<void> {
     const params = numCuenta ? `?num_cuenta=${numCuenta}` : '';
     return this.http.delete<void>(
@@ -87,7 +83,6 @@ export class PocketService {
     );
   }
 
-  // Métodos legacy para compatibilidad (deprecated)
   getPocketsForUser(email: string): Pocket[] {
     return [];
   }

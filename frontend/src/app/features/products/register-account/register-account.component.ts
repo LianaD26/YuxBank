@@ -40,7 +40,6 @@ export class RegisterAccountComponent implements OnInit {
     const number = this.accountNumber();
     const pass = this.password();
 
-    // Client-side validations
     if (!type || !number || !pass) {
       alert('Please fill out all fields.');
       return;

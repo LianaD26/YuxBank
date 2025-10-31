@@ -45,10 +45,8 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    // Clear previous error message
     this.errorMessage.set('');
 
-    // Client-side validations
     if (!this.name() || !this.last_name() || !this.email() || !this.password() || !this.confirm_password()) {
       alert('Please complete all fields.');
       return;

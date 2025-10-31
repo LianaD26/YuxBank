@@ -29,14 +29,7 @@ export class LogInUserService {
   
   constructor(private http: HttpClient) {}
 
-  /**
-   * Inicia sesión de un usuario en la API
-   * @param email Correo electrónico del usuario
-   * @param password Contraseña del usuario
-   * @returns Observable con la respuesta de la API
-   */
   public login(email: string, password: string): Observable<LoginResponse> {
-    // Mapear los campos del frontend a los que espera la API
     const loginDto = {
       correo: email,
       contrasena: password
@@ -48,17 +41,12 @@ export class LogInUserService {
       );
   }
 
-  /**
-   * Handles HTTP errors
-   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
       if (error.status === 401 || error.status === 404 || error.status === 400) {
         errorMessage = 'Incorrect data.';
       } else if (error.status === 0) {

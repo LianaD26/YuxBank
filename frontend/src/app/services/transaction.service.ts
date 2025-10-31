@@ -32,9 +32,6 @@ export class TransactionService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets authorization headers with JWT token
-   */
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('yuxbank_token');
     return new HttpHeaders({
@@ -43,9 +40,6 @@ export class TransactionService {
     });
   }
 
-  /**
-   * Creates a new transfer/transaction
-   */
   createTransfer(transaction: TransactionRequest): Observable<TransactionResponse> {
     return this.http.post<TransactionResponse>(`${this.apiUrl}/transferir`, transaction, { 
       headers: this.getHeaders() 
@@ -54,9 +48,6 @@ export class TransactionService {
     );
   }
 
-  /**
-   * Gets all transactions for the authenticated user
-   */
   getTransactions(): Observable<Transaction[]> {
     return this.http.get<TransactionResponse[]>(this.apiUrl, { 
       headers: this.getHeaders() 
@@ -66,9 +57,6 @@ export class TransactionService {
     );
   }
 
-  /**
-   * Gets transactions by account ID
-   */
   getTransactionsByAccount(accountId: number): Observable<Transaction[]> {
     return this.http.get<TransactionResponse[]>(`${this.apiUrl}/cuenta/${accountId}/historial`, { 
       headers: this.getHeaders() 
@@ -78,9 +66,6 @@ export class TransactionService {
     );
   }
 
-  /**
-   * Maps API response to Transaction model
-   */
   private mapToTransactionModel(transactions: TransactionResponse[]): Transaction[] {
     return transactions.map(tx => ({
       id: `TXN${tx.id_transaccion}`,
@@ -93,17 +78,12 @@ export class TransactionService {
     }));
   }
 
-  /**
-   * Handles HTTP errors
-   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
       if (error.status === 400) {
         const serverError = error.error;
         if (serverError?.message) {

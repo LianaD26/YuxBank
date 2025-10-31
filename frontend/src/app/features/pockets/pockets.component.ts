@@ -76,7 +76,7 @@ export class PocketsComponent implements OnInit {
     ).subscribe({
       next: () => {
         this.closePocketManager();
-        this.loadPockets(); // Recargar la lista
+        this.loadPockets();
         this.router.navigate(['/pockets']);
       },
       error: (err) => {
@@ -105,7 +105,7 @@ export class PocketsComponent implements OnInit {
     ).subscribe({
       next: () => {
         alert('Pocket deleted successfully. Balance returned to your account.');
-        this.loadPockets(); // Recargar la lista
+        this.loadPockets();
       },
       error: (err) => {
         console.error('Error deleting pocket:', err);
